@@ -4,9 +4,20 @@
     <meta charset="UTF-8" />
     <title>날씨 앱</title>
     <script type="module" src="/js/weatherClient.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #111;
+        color: white;
+        transition: background-image 0.5s ease-in-out;
+      }
+    </style>
   </head>
-  <body>
+  <body style="min-height: 100vh">
     <h1>날씨 정보</h1>
+    <h2 id="weather-keyword" style="margin-top: 10px; font-size: 1.5rem"></h2>
     <div id="weather">날씨 정보를 불러오는 중...</div>
   </body>
 </html>

@@ -24,6 +24,10 @@ export async function fetchWeather() {
       `강수량: ${precipitation} mm\n` +
       `일출: ${sunrise}\n` +
       `일몰: ${sunset}`;
+
+    const code = data.current_weather.weathercode;
+    const { updateBackground } = await import("./weatherBackground.js");
+    updateBackground(code);
   } catch (error) {
     console.error("날씨 정보를 불러오는 데 실패했습니다.", error);
   }
