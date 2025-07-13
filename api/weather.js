@@ -9,8 +9,7 @@ export default async function handler(req, res) {
       .json({ error: "latitude와 longitude가 필요합니다." });
   }
 
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
-
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
