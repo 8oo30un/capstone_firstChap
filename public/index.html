@@ -1,23 +1,49 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <title>날씨 앱</title>
     <script type="module" src="/js/weatherClient.js"></script>
-
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: #111;
-        color: white;
-        transition: background-image 0.5s ease-in-out;
-      }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body style="min-height: 100vh">
-    <h1>날씨 정보</h1>
-    <h2 id="weather-keyword" style="margin-top: 10px; font-size: 1.5rem"></h2>
-    <div id="weather">날씨 정보를 불러오는 중...</div>
+  <body
+    class="min-h-screen bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-800 text-white flex flex-col items-center justify-center p-6"
+  >
+    <div
+      id="loading-spinner"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50"
+    >
+      <svg
+        class="animate-spin h-12 w-12 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v8H4z"
+        ></path>
+      </svg>
+    </div>
+    <h1 class="text-5xl font-extrabold mb-6 drop-shadow-lg">오늘의 날씨</h1>
+    <h2
+      id="weather-keyword"
+      class="text-2xl font-semibold mb-4 tracking-wide"
+    ></h2>
+    <div
+      id="weather"
+      class="bg-white bg-opacity-20 rounded-xl p-6 text-xl font-medium max-w-md w-full text-center shadow-lg backdrop-blur-md"
+    >
+      날씨 정보를 불러오는 중...
+    </div>
   </body>
 </html>

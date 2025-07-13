@@ -24,10 +24,17 @@ export async function updateBackground(weatherCode) {
       `날씨 코드 ${weatherCode} (${keyword}) → 배경 이미지: ${imageUrl}`
     );
 
-    document.body.style.backgroundImage = `url('${imageUrl}')`;
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center";
-    document.body.style.backgroundRepeat = "no-repeat";
+    const img = new Image();
+    img.src = imageUrl;
+    img.onload = () => {
+      document.body.style.backgroundImage = `url('${imageUrl}')`;
+      document.body.style.backgroundSize = "cover";
+      document.body.style.backgroundPosition = "center";
+      document.body.style.backgroundRepeat = "no-repeat";
+
+      const spinner = document.getElementById("loading-spinner");
+      if (spinner) spinner.style.display = "none";
+    };
   } catch (error) {
     console.error("배경 이미지 불러오기 실패", error);
   }
