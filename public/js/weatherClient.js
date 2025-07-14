@@ -2,8 +2,17 @@
 
 export async function fetchWeather() {
   try {
+    const getPosition = () =>
+      new Promise((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject)
+      );
+
+    const position = await getPosition().catch(() => null);
+    const latitude = position?.coords.latitude ?? 37.57;
+    const longitude = position?.coords.longitude ?? 126.98;
+
     const response = await fetch(
-      "/api/weather?latitude=37.57&longitude=126.98&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode&daily=sunrise,sunset&timezone=Asia%2FSeoul"
+      `/api/weather?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode&daily=sunrise,sunset&timezone=Asia%2FSeoul`
     );
     if (!response.ok) throw new Error("API 호출 실패");
 
