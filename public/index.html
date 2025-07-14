@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" class="scroll-smooth">
+<html lang="ko" class="scroll-smooth dark">
   <head>
     <meta charset="UTF-8" />
     <title>날씨 앱</title>
@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body
-    class="min-h-screen bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-800 text-white flex flex-col items-center justify-center p-6"
+    class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 text-white flex flex-col items-center justify-center p-6"
   >
     <div
       id="loading-spinner"
@@ -41,9 +41,14 @@
     ></h2>
     <div
       id="weather"
-      class="bg-white bg-opacity-20 rounded-xl p-6 text-xl font-medium max-w-md w-full text-center shadow-lg backdrop-blur-md"
+      class="bg-white bg-opacity-20 dark:bg-gray-900 dark:bg-opacity-30 rounded-xl p-6 text-xl font-medium max-w-md w-full text-center shadow-lg backdrop-blur-md"
     >
       날씨 정보를 불러오는 중...
+    </div>
+</div>
+    <div id="prep-items" class="fixed right-4 top-4 bg-white/20 dark:bg-gray-800/40 text-white p-4 rounded-lg max-w-xs shadow-lg backdrop-blur-md z-40">
+      <h3 class="text-lg font-semibold mb-2">오늘의 추천 준비물</h3>
+      <ul id="prep-list" class="list-disc list-inside space-y-1 text-sm"></ul>
     </div>
   </body>
 </html>

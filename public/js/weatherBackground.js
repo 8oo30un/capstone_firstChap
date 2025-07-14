@@ -1,10 +1,10 @@
 function getWeatherKeyword(code) {
-  if (code === 0) return "clear sunny sky landscape";
-  if (code >= 1 && code <= 3) return "overcast cloudy sky city";
+  if (code === 0) return "clear sunny";
+  if (code >= 1 && code <= 3) return "overcast cloudy";
   if (code >= 45 && code <= 48) return "dense fog over forest";
-  if (code >= 51 && code <= 67) return "rainy day street";
-  if (code >= 71 && code <= 86) return "snowy winter landscape";
-  if (code >= 95) return "thunderstorm lightning night";
+  if (code >= 51 && code <= 67) return "rainy day";
+  if (code >= 71 && code <= 86) return "snowy winter";
+  if (code >= 95) return "thunderstorm lightning";
   return "weather landscape";
 }
 
