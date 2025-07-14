@@ -11,6 +11,20 @@ export async function fetchWeather() {
     const latitude = position?.coords.latitude ?? 37.57;
     const longitude = position?.coords.longitude ?? 126.98;
 
+    // Reverse geocoding to get city name
+    let cityName = "알 수 없음";
+    try {
+      const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${latitude}&longitude=${longitude}&language=ko`);
+      if (geoResponse.ok) {
+        const geoData = await geoResponse.json();
+        cityName = geoData?.city || geoData?.locality || geoData?.name || "알 수 없음";
+      }
+    } catch (e) {
+      console.warn("위치 정보를 가져오는 데 실패했습니다.");
+    }
+    const locationEl = document.getElementById("location-name");
+    if (locationEl) locationEl.innerText = cityName;
+
     const response = await fetch(
       `/api/weather?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode&daily=sunrise,sunset&timezone=Asia%2FSeoul`
     );
