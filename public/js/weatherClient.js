@@ -11,16 +11,34 @@ export async function fetchWeather() {
     const latitude = position?.coords.latitude ?? 37.57;
     const longitude = position?.coords.longitude ?? 126.98;
 
-    // Reverse geocoding to get city name
+    // Force HTTPS if loaded from local file or insecure context
+    if (location.protocol !== "https:" && location.protocol !== "http:") {
+      location.href = location.href.replace(/^http:/, "https:");
+    }
+
+    console.log("Geolocation:", latitude, longitude);
+
     let cityName = "알 수 없음";
     try {
-      const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${latitude}&longitude=${longitude}&language=ko`);
-      if (geoResponse.ok) {
-        const geoData = await geoResponse.json();
-        cityName = geoData?.city || geoData?.locality || geoData?.name || "알 수 없음";
+      const geoRes = await fetch(
+        `/api/reverse-geocode?latitude=${latitude}&longitude=${longitude}`
+      );
+
+      if (geoRes.ok) {
+        const geoData = await geoRes.json();
+        const result = geoData.results?.[0];
+        cityName =
+          result?.components?.city ||
+          result?.components?.town ||
+          result?.components?.village ||
+          result?.components?.county ||
+          result?.components?.state ||
+          "알 수 없음";
+      } else {
+        console.warn("서버리스 위치 응답 실패:", geoRes.status);
       }
     } catch (e) {
-      console.warn("위치 정보를 가져오는 데 실패했습니다.");
+      console.warn("서버리스 위치 정보를 가져오는 데 실패했습니다.", e);
     }
     const locationEl = document.getElementById("location-name");
     if (locationEl) locationEl.innerText = cityName;
