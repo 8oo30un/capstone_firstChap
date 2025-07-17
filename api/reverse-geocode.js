@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 // api/reverse-geocode.js
 export default async function handler(req, res) {
   const { latitude, longitude } = req.query;

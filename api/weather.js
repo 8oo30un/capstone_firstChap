@@ -13,7 +13,6 @@ export default async function handler(req, res) {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      ㅊ;
       return res.status(500).json({ error: "Open-Meteo API 호출 실패" });
     }
     const data = await response.json();

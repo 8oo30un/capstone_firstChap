@@ -1,22 +1,27 @@
 // public/js/weatherClient.js
 
-export async function fetchWeather() {
+export async function fetchWeather(inputLat = null, inputLng = null) {
   try {
-    const getPosition = () =>
-      new Promise((resolve, reject) =>
-        navigator.geolocation.getCurrentPosition(resolve, reject)
-      );
+    let latitude = inputLat;
+    let longitude = inputLng;
 
-    const position = await getPosition().catch(() => null);
-    const latitude = position?.coords.latitude ?? 37.57;
-    const longitude = position?.coords.longitude ?? 126.98;
+    if (latitude === null || longitude === null) {
+      const getPosition = () =>
+        new Promise((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject)
+        );
+
+      const position = await getPosition().catch(() => null);
+      latitude = position?.coords.latitude ?? 37.57;
+      longitude = position?.coords.longitude ?? 126.98;
+    }
 
     // Force HTTPS if loaded from local file or insecure context
     if (location.protocol !== "https:" && location.protocol !== "http:") {
       location.href = location.href.replace(/^http:/, "https:");
     }
 
-    console.log("Geolocation:", latitude, longitude);
+    console.log("Selected coordinates:", latitude, longitude);
 
     let cityName = "알 수 없음";
     try {
