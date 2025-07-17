@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "API 키가 설정되지 않았습니다." });
   }
 
-  const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${OPEN_CAGE_API_KEY}&language=ko`;
+  const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${OPEN_CAGE_API_KEY}&language=ko`;
 
   try {
     const response = await fetch(url);

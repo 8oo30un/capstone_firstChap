@@ -1,3 +1,20 @@
+// Ensure weather info box is always visible
+const weatherInfoBox = document.getElementById("weather-info-box");
+if (weatherInfoBox?.classList.contains("hidden")) {
+  weatherInfoBox.classList.remove("hidden");
+}
+
+// Function to update city name in the info box (legacy)
+function updateWeatherCityName(name) {
+  const cityNameEl = document.getElementById("weather-city-name");
+  if (cityNameEl && name) {
+    cityNameEl.textContent = `도시명: ${name}`;
+  }
+}
+
+// Expose to window so it can be called from other modules
+window.updateWeatherCityName = updateWeatherCityName;
+
 let map, marker;
 let selectedCoords = { lat: 37.57, lng: 126.98 };
 
@@ -28,6 +45,51 @@ async function updateMarkerWithWeather(lat, lng) {
     );
     const data = await res.json();
     const code = data.current_weather?.weathercode ?? 0;
+
+    // Update city name in mini info modal and legacy box
+    try {
+      if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
+        console.warn(
+          "❗ 유효하지 않은 좌표로 reverse-geocode 요청을 중단합니다:",
+          lat,
+          lng
+        );
+        return;
+      }
+      console.log(
+        "🌐 reverse-geocode 요청 URL:",
+        `/api/reverse-geocode?latitude=${lat}&longitude=${lng}`
+      );
+      const geoRes = await fetch(
+        `/api/reverse-geocode?latitude=${lat}&longitude=${lng}`
+      );
+      console.log("Reverse geocode response status:", geoRes.status);
+      if (geoRes.ok) {
+        const cityData = await geoRes.json();
+        console.log("Reverse geocode data:", cityData);
+
+        const cityNameFromResult =
+          cityData.results?.[0]?.components?.city ||
+          cityData.results?.[0]?.components?.town ||
+          cityData.results?.[0]?.components?.village ||
+          cityData.results?.[0]?.components?.county ||
+          "알 수 없음";
+
+        const miniCityEl = document.getElementById("mini-city-name");
+        if (miniCityEl) {
+          miniCityEl.textContent = `도시명: ${cityNameFromResult}`;
+        }
+        if (window.updateWeatherCityName) {
+          window.updateWeatherCityName(cityNameFromResult);
+        }
+      } else {
+        const errorText = await geoRes.text();
+        console.warn("Reverse geocode 실패:", errorText);
+      }
+    } catch (e) {
+      console.warn("도시명 가져오기 실패:", e);
+    }
+
     const emoji = weatherIcons[code] || "❓";
 
     const icon = L.divIcon({
@@ -55,6 +117,7 @@ async function updateMarkerWithWeather(lat, lng) {
 
     marker.on("dragend", (e) => {
       selectedCoords = marker.getLatLng();
+      updateMarkerWithWeather(selectedCoords.lat, selectedCoords.lng);
     });
 
     // Remove existing overlays
@@ -70,13 +133,13 @@ async function updateMarkerWithWeather(lat, lng) {
     const windSpeed = data.current_weather?.windspeed ?? 0;
     const precipitation = data.hourly?.precipitation?.[0] ?? 0;
 
-    // Update weather info box text
-    const windInfoEl = document.getElementById("wind-info");
-    const precipitationInfoEl = document.getElementById("precipitation-info");
+    // Update mini info modal weather info text
+    const miniWindEl = document.getElementById("mini-wind");
+    const miniPrecipitationEl = document.getElementById("mini-precipitation");
 
-    if (windInfoEl) windInfoEl.textContent = `풍속: ${windSpeed} km/h`;
-    if (precipitationInfoEl)
-      precipitationInfoEl.textContent = `강수량: ${precipitation} mm`;
+    if (miniWindEl) miniWindEl.textContent = `풍속: ${windSpeed} km/h 💨`;
+    if (miniPrecipitationEl)
+      miniPrecipitationEl.textContent = `강수량: ${precipitation} mm ☔`;
   } catch (err) {
     console.error("Weather fetch failed:", err);
   }
@@ -107,23 +170,23 @@ function initMap() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("map-modal");
+  const modalContainer = document.getElementById("map-modal-container");
   const openBtn = document.getElementById("open-map-modal");
   const closeBtn = document.getElementById("close-map-modal");
   const confirmBtn = document.getElementById("confirm-location");
 
   openBtn.addEventListener("click", () => {
-    modal.classList.remove("hidden");
+    modalContainer.classList.remove("hidden");
     if (!map) initMap();
     else map.invalidateSize();
   });
 
   closeBtn.addEventListener("click", () => {
-    modal.classList.add("hidden");
+    modalContainer.classList.add("hidden");
   });
 
   confirmBtn.addEventListener("click", async () => {
-    modal.classList.add("hidden");
+    modalContainer.classList.add("hidden");
     const { fetchWeather } = await import("./weatherClient.js");
     fetchWeather(selectedCoords.lat, selectedCoords.lng);
   });

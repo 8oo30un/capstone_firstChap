@@ -84,38 +84,66 @@
     </div>
 <button id="open-map-modal">지도에서 위치 선택</button>
 <div
-  id="map-modal"
-  class="fixed inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/70 to-gray-700/80 backdrop-blur-sm flex items-center justify-center hidden z-50"
+  id="map-modal-container"
+  class="fixed inset-0 bg-gray-900/90 backdrop-blur-sm flex items-center justify-center hidden z-50 px-8"
 >
-  <div id="map-error-message" class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-sm px-4 py-2 rounded shadow-md hidden z-[1001]">
-    위치를 찾을 수 없습니다. 다시 시도해주세요.
-  </div>
-  <div class="bg-white w-[90%] h-[90%] rounded-lg shadow-lg relative">
-    <div id="search-container" class="absolute top-4 right-4 z-[1000] bg-white/90 p-3 rounded-md shadow-lg backdrop-blur-md flex gap-2">
+  <!-- Left side: map modal -->
+  <div
+    id="map-modal"
+    class="bg-white dark:bg-gray-800 dark:text-white w-[70%] h-[90%] rounded-lg shadow-lg relative flex flex-col mr-4"
+  >
+    <div id="map-error-message" class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-sm px-4 py-2 rounded shadow-md hidden z-[1001]">
+      위치를 찾을 수 없습니다. 다시 시도해주세요.
+    </div>
+    <div
+      id="search-container"
+      class="absolute top-4 right-4 z-[1000] bg-gray-100 dark:bg-gray-700/90 p-3 rounded-md shadow-lg backdrop-blur-md flex gap-2"
+      style="width: max-content;"
+    >
       <input
         type="text"
         id="place-input"
         placeholder="도시 이름을 입력하세요"
-        class="p-1 px-2 text-sm rounded bg-white text-black"
+        class="p-1 px-2 text-sm rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-black dark:text-white"
       />
       <button
         id="search-place"
-        class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded"
+        class="bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white text-sm px-3 py-1 rounded"
       >
         검색
       </button>
     </div>
-    <div id="leaflet-map" class="w-full h-[90%] rounded-t-lg"></div>
-      <div id="weather-info-box" class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-80 dark:bg-gray-800 dark:bg-opacity-80 text-gray-900 dark:text-white rounded-lg px-4 py-2 shadow-lg z-50 w-72 text-center">
-    <p id="wind-info" class="text-lg font-semibold">풍속: -- km/h</p>
-    <p id="precipitation-info" class="text-lg font-semibold">강수량: -- mm</p>
-  </div>
-    <div class="p-4 flex justify-between items-center">
-      <button id="confirm-location" class="bg-blue-500 text-white px-4 py-2 rounded">
+    <div
+      id="leaflet-map"
+      class="flex-grow rounded-t-lg"
+      style="height: calc(100% - 130px);"
+    ></div>
+    <div
+      class="p-4 flex justify-between items-center border-t border-gray-300 dark:border-gray-700"
+    >
+      <button
+        id="confirm-location"
+        class="bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white px-6 py-2 rounded-md transition"
+      >
         이 위치로 보기
       </button>
-      <button id="close-map-modal" class="text-gray-600">닫기</button>
+      <button
+        id="close-map-modal"
+        class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+      >
+        닫기
+      </button>
     </div>
+  </div>
+
+  <!-- Right side: mini info modal -->
+  <div
+    id="mini-info-modal"
+    class="bg-white/90 dark:bg-gray-800/90 dark:text-white w-[30%] h-[90%] rounded-lg shadow-lg p-6 flex flex-col justify-center gap-6 ml-4"
+  >
+    <h2 id="mini-city-name" class="text-xl font-bold text-center">도시명: --</h2>
+    <p id="mini-precipitation" class="text-lg font-semibold">강수량: -- mm ☔</p>
+    <p id="mini-wind" class="text-lg font-semibold">풍속: -- km/h 💨</p>
   </div>
 </div>
 </div>
