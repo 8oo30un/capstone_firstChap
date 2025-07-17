@@ -1,7 +1,7 @@
 // api/weather.js
 
 export default async function handler(req, res) {
-  const { latitude, longitude } = req.query;
+  const { latitude, longitude, hourly, daily } = req.query;
 
   if (!latitude || !longitude) {
     return res
@@ -9,7 +9,23 @@ export default async function handler(req, res) {
       .json({ error: "latitude와 longitude가 필요합니다." });
   }
 
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul`;
+  const baseUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&timezone=Asia%2FSeoul`;
+  const params = [];
+
+  if (req.query.current_weather === "true") {
+    params.push("current_weather=true");
+  }
+
+  if (hourly) {
+    params.push(`hourly=${hourly}`);
+  }
+
+  if (daily) {
+    params.push(`daily=${daily}`);
+  }
+
+  const url = `${baseUrl}&${params.join("&")}`;
+
   try {
     const response = await fetch(url);
     if (!response.ok) {

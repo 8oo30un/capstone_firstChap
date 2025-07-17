@@ -16,6 +16,14 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       longitude = position?.coords.longitude ?? 126.98;
     }
 
+    // Set window variables and call updateRainChartWithNewLocation if available
+    window.currentWeatherLat = latitude;
+    window.currentWeatherLng = longitude;
+    if (window.updateRainChartWithNewLocation) {
+      window.updateRainChartWithNewLocation(latitude, longitude);
+    }
+    console.log("위치 설정됨:", latitude, longitude);
+
     // Force HTTPS if loaded from local file or insecure context
     if (location.protocol !== "https:" && location.protocol !== "http:") {
       location.href = location.href.replace(/^http:/, "https:");
@@ -97,6 +105,29 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       });
     }
     renderPreparationItems(code);
+
+    function updateBackCardDetails(data) {
+      const tempRangeEl = document.getElementById("temperature-range");
+      if (tempRangeEl) {
+        const max = data.daily.temperature_2m_max?.[0];
+        const min = data.daily.temperature_2m_min?.[0];
+        tempRangeEl.textContent = `🌡️ 최고: ${max ?? "--"}℃ / 최저: ${
+          min ?? "--"
+        }℃`;
+      }
+
+      const uvIndexEl = document.getElementById("uv-index");
+      if (uvIndexEl) {
+        uvIndexEl.textContent = `☀️ 자외선 지수: --`; // Placeholder
+      }
+
+      const pm25El = document.getElementById("pm25-level");
+      if (pm25El) {
+        pm25El.textContent = `🌫️ 미세먼지(PM2.5): -- ㎍/㎥`; // Placeholder
+      }
+    }
+
+    updateBackCardDetails(data);
   } catch (error) {
     console.error("날씨 정보를 불러오는 데 실패했습니다.", error);
   }

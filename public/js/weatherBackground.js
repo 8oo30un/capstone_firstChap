@@ -13,6 +13,7 @@ export async function updateBackground(weatherCode) {
   const keywordElement = document.getElementById("weather-keyword");
   if (keywordElement) keywordElement.innerText = keyword;
   const UNSPLASH_ACCESS_KEY = "6opG7_SAJq3D33Om0rA9MZ4SwiangrDuHuR9zu96Vvs"; // Replace with actual key
+
   const url = `https://api.unsplash.com/photos/random?query=${keyword}&orientation=landscape&client_id=${UNSPLASH_ACCESS_KEY}`;
 
   try {

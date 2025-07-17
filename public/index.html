@@ -13,6 +13,7 @@
   src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
 ></script>
 <script type="module" src="./js/mapModal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   .flip-container {
     perspective: 1000px;
@@ -77,7 +78,13 @@
         <!-- Back side -->
         <div class="flip-back absolute inset-0 bg-white/10 dark:bg-gray-800/30 rounded-xl p-6 text-center shadow-lg backdrop-blur-md cursor-pointer flex items-center justify-center">
           <div id="back-card-content" class="text-white text-lg">
-            여기에 새로운 코드나 추가 정보를 넣으세요.
+            <div class="flex flex-col gap-4">
+    <h3 class="text-xl font-semibold mb-2">📊 오늘의 날씨 데이터</h3>
+    <div id="rain-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left">강수량 차트 영역</div>
+    <div id="temperature-range" class="text-sm text-gray-300">🌡️ 최고: --℃ / 최저: --℃</div>
+    <div id="uv-index" class="text-sm text-yellow-300">☀️ 자외선 지수: --</div>
+    <div id="pm25-level" class="text-sm text-green-300">🌫️ 미세먼지(PM2.5): -- ㎍/㎥</div>
+  </div>
           </div>
         </div>
       </div>
@@ -144,6 +151,8 @@
     <h2 id="mini-city-name" class="text-xl font-bold text-center">도시명: --</h2>
     <p id="mini-precipitation" class="text-lg font-semibold">강수량: -- mm ☔</p>
     <p id="mini-wind" class="text-lg font-semibold">풍속: -- km/h 💨</p>
+    <img id="mini-modal-image" class="w-full h-32 object-cover rounded-t-md" />
+<div id="mini-weather-keyword" class="text-sm mt-2 font-medium text-gray-300"></div>
   </div>
 </div>
 </div>
@@ -151,7 +160,79 @@
       <h3 class="text-lg font-semibold mb-2">오늘의 추천 준비물</h3>
       <ul id="prep-list" class="list-disc list-inside space-y-1 text-sm"></ul>
     </div>
+    <script type="module" src="./js/chart.js"></script>
+
+<script type="module">
+  import { renderRainChart } from './js/chart.js';
+
+  async function fetchHourlyWeatherAndRenderChart() {
+    try {
+      
+      const chartContainer = document.getElementById('rain-chart');
+      
+      if (!chartContainer) {
+        
+        return;
+      }
+
+      const lat = window.currentWeatherLat;
+      const lng = window.currentWeatherLng;
+
+      const response = await fetch(`/api/weather?latitude=${lat}&longitude=${lng}&hourly=precipitation&timezone=Asia%2FSeoul`);
+      
+      if (!response.ok) throw new Error('API 호출 실패');
+
+      const data = await response.json();
+      
+
+      const hourlyData = {
+        time: data.hourly?.time || [],
+        precipitation: data.hourly?.precipitation || [],
+      };
+      console.log('📈 hourlyData 준비됨:', hourlyData);
+
+      chartContainer.innerHTML = '';
+      renderRainChart(hourlyData, chartContainer);
+    } catch (error) {
+      
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.currentWeatherLat && window.currentWeatherLng) {
+      window.updateRainChartWithNewLocation(window.currentWeatherLat, window.currentWeatherLng);
+    } else {
+      console.warn("🌐 날씨 데이터를 불러올 위치 정보가 없습니다.");
+    }
+  });
 </script>
+<script>
+window.updateRainChartWithNewLocation = async function (lat, lng) {
+  try {
+    const chartContainer = document.getElementById('rain-chart');
+    if (!chartContainer) return;
+
+    const response = await fetch(`/api/weather?latitude=${lat}&longitude=${lng}&hourly=precipitation&timezone=Asia%2FSeoul`);
+    if (!response.ok) throw new Error('API 호출 실패');
+
+    const data = await response.json();
+    const hourlyData = {
+      time: data.hourly?.time || [],
+      precipitation: data.hourly?.precipitation || [],
+    };
+    console.log('📈 위치 변경 후 차트 데이터:', hourlyData);
+
+    chartContainer.innerHTML = '';
+
+    // 동적으로 import 후 호출
+    const { renderRainChart } = await import('./js/chart.js');
+    renderRainChart(hourlyData, chartContainer);
+  } catch (error) {
+    console.error("🌧️ 위치 변경 후 차트 갱신 실패:", error);
+  }
+};
+</script>
+
   <script>
     const flipContainer = document.getElementById('flip-container');
     const weatherCardFront = document.getElementById('weather-card-front');
@@ -166,5 +247,6 @@
     const flipBack = flipContainer.querySelector('.flip-back');
     flipBack.addEventListener('click', toggleFlip);
   </script>
+</script>
   </body>
 </html>

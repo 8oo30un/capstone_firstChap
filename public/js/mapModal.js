@@ -1,3 +1,13 @@
+function getWeatherKeyword(code) {
+  if (code === 0) return "clear sunny";
+  if (code >= 1 && code <= 3) return "overcast cloudy";
+  if (code >= 45 && code <= 48) return "dense fog over forest";
+  if (code >= 51 && code <= 67) return "rainy day";
+  if (code >= 71 && code <= 86) return "snowy winter";
+  if (code >= 95) return "thunderstorm lightning";
+  return "weather landscape";
+}
+
 // Ensure weather info box is always visible
 const weatherInfoBox = document.getElementById("weather-info-box");
 if (weatherInfoBox?.classList.contains("hidden")) {
@@ -38,6 +48,34 @@ const weatherIcons = {
   99: "🌩️",
 };
 
+const UNSPLASH_ACCESS_KEY = "6opG7_SAJq3D33Om0rA9MZ4SwiangrDuHuR9zu96Vvs"; // Replace with actual key
+
+async function updateMiniModalImage(cityName, weatherCode) {
+  try {
+    const imageRes = await fetch(
+      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
+        cityName
+      )}&client_id=${UNSPLASH_ACCESS_KEY}&orientation=landscape&per_page=1`
+    );
+    const imageData = await imageRes.json();
+    const imageUrl = imageData.results?.[0]?.urls?.regular;
+
+    const imgEl = document.getElementById("mini-modal-image");
+    const keywordEl = document.getElementById("mini-weather-keyword");
+
+    if (imgEl && imageUrl) {
+      imgEl.src = imageUrl;
+    }
+
+    if (keywordEl) {
+      const keyword = getWeatherKeyword(weatherCode);
+      keywordEl.textContent = keyword || "";
+    }
+  } catch (err) {
+    console.error("🖼️ 미니 모달 이미지 업데이트 실패:", err);
+  }
+}
+
 async function updateMarkerWithWeather(lat, lng) {
   try {
     const res = await fetch(
@@ -68,14 +106,21 @@ async function updateMarkerWithWeather(lat, lng) {
         const cityData = await geoRes.json();
         console.log("Reverse geocode data:", cityData);
 
+        const components = cityData.results?.[0]?.components || {};
         const cityNameFromResult =
-          cityData.results?.[0]?.components?.city ||
-          cityData.results?.[0]?.components?.town ||
-          cityData.results?.[0]?.components?.village ||
-          cityData.results?.[0]?.components?.county ||
+          components.city ||
+          components.town ||
+          components.village ||
+          components.county ||
+          components.state ||
+          components.country ||
           "알 수 없음";
 
-        const miniCityEl = document.getElementById("mini-city-name");
+        updateMiniModalImage(cityNameFromResult, code);
+
+        const miniCityEl =
+          document.getElementById("weather-city-name") ||
+          document.getElementById("mini-city-name");
         if (miniCityEl) {
           miniCityEl.textContent = `도시명: ${cityNameFromResult}`;
         }
@@ -187,8 +232,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   confirmBtn.addEventListener("click", async () => {
     modalContainer.classList.add("hidden");
+
+    // 선택된 좌표를 글로벌 변수에 저장
+    window.currentWeatherLat = selectedCoords.lat;
+    window.currentWeatherLng = selectedCoords.lng;
+
+    // 날씨 데이터 호출 (기존 로직 유지)
     const { fetchWeather } = await import("./weatherClient.js");
     fetchWeather(selectedCoords.lat, selectedCoords.lng);
+
+    // 강수량 차트가 있다면 위치 정보 갱신
+    if (window.updateRainChartWithNewLocation) {
+      window.updateRainChartWithNewLocation(
+        selectedCoords.lat,
+        selectedCoords.lng
+      );
+    }
+
+    console.log(
+      "위치 확정 - 위도:",
+      selectedCoords.lat,
+      "경도:",
+      selectedCoords.lng
+    );
   });
 
   // Search button and input for place search
@@ -200,20 +266,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!query) return;
 
     try {
-      console.log("🔍 검색어:", query);
       const response = await fetch(
         `/api/geocode?place=${encodeURIComponent(query)}`
       );
-      console.log("📡 응답 상태:", response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("❌ 지오코딩 실패 응답:", errorText);
+
         throw new Error("Geocoding failed");
       }
 
       const data = await response.json();
-      console.log("📦 응답 데이터:", data);
 
       const lat = data.lat;
       const lng = data.lng;
@@ -221,8 +284,6 @@ document.addEventListener("DOMContentLoaded", () => {
       selectedCoords = { lat, lng };
       map.setView([lat, lng], 13);
       updateMarkerWithWeather(lat, lng);
-    } catch (error) {
-      console.error("❌ 검색 실패:", error);
-    }
+    } catch (error) {}
   });
 });
