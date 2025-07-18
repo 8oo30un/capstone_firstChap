@@ -79,12 +79,19 @@
         <div class="flip-back absolute inset-0 bg-white/10 dark:bg-gray-800/30 rounded-xl p-6 text-center shadow-lg backdrop-blur-md cursor-pointer flex items-center justify-center">
           <div id="back-card-content" class="text-white text-lg">
             <div class="flex flex-col gap-4">
-    <h3 class="text-xl font-semibold mb-2">📊 오늘의 날씨 데이터</h3>
-    <div id="rain-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left">강수량 차트 영역</div>
-    <div id="temperature-range" class="text-sm text-gray-300">🌡️ 최고: --℃ / 최저: --℃</div>
-    <div id="uv-index" class="text-sm text-yellow-300">☀️ 자외선 지수: --</div>
-    <div id="pm25-level" class="text-sm text-green-300">🌫️ 미세먼지(PM2.5): -- ㎍/㎥</div>
+  <h3 class="text-xl font-semibold mb-2">📊 오늘의 날씨 데이터</h3>
+  <div class="flex justify-center gap-2 mb-2">
+    <button type="button" id="btn-rain" class="px-3 py-1 rounded bg-blue-600 text-white text-sm">강수량</button>
+    <button type="button" id="btn-temp" class="px-3 py-1 rounded bg-red-600 text-white text-sm">기온</button>
+    <button type="button" id="btn-uv" class="px-3 py-1 rounded bg-yellow-500 text-black text-sm">자외선</button>
   </div>
+  <div id="rain-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left hidden">강수량 차트 영역</div>
+  <div id="temp-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left hidden">기온 차트 영역</div>
+  <div id="uv-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left hidden">자외선 차트 영역</div>
+  <div id="temperature-range" class="text-sm text-gray-300">🌡️ 최고: --℃ / 최저: --℃</div>
+  <div id="uv-index" class="text-sm text-yellow-300">☀️ 자외선 지수: --</div>
+  <div id="pm25-level" class="text-sm text-green-300">🌫️ 미세먼지(PM2.5): -- ㎍/㎥</div>
+</div>
           </div>
         </div>
       </div>
@@ -163,48 +170,66 @@
     <script type="module" src="./js/chart.js"></script>
 
 <script type="module">
-  import { renderRainChart } from './js/chart.js';
+  import { renderRainChart, renderTempChart, renderUvChart } from './js/chart.js';
 
-  async function fetchHourlyWeatherAndRenderChart() {
+  async function fetchAllCharts(lat, lng) {
+      console.log("fetchAllCharts 시작", lat, lng);
+
     try {
-      
-      const chartContainer = document.getElementById('rain-chart');
-      
-      if (!chartContainer) {
-        
-        return;
-      }
+      const rainContainer = document.getElementById('rain-chart');
+      const tempContainer = document.getElementById('temp-chart');
+      const uvContainer = document.getElementById('uv-chart');
 
-      const lat = window.currentWeatherLat;
-      const lng = window.currentWeatherLng;
-
-      const response = await fetch(`/api/weather?latitude=${lat}&longitude=${lng}&hourly=precipitation&timezone=Asia%2FSeoul`);
-      
+      const response = await fetch(`/api/weather?latitude=${lat}&longitude=${lng}&hourly=precipitation,temperature_2m,uv_index&timezone=Asia%2FSeoul`);
       if (!response.ok) throw new Error('API 호출 실패');
 
       const data = await response.json();
-      
 
-      const hourlyData = {
-        time: data.hourly?.time || [],
-        precipitation: data.hourly?.precipitation || [],
-      };
-      console.log('📈 hourlyData 준비됨:', hourlyData);
+      const hourlyTime = data.hourly?.time || [];
 
-      chartContainer.innerHTML = '';
-      renderRainChart(hourlyData, chartContainer);
+      if (rainContainer) {
+        const rainData = {
+          time: hourlyTime,
+          precipitation: data.hourly?.precipitation || [],
+        };
+        rainContainer.innerHTML = '';
+        renderRainChart(rainData, rainContainer);
+      }
+
+      if (tempContainer) {
+        const tempData = {
+          time: hourlyTime,
+          temperature_2m: data.hourly?.temperature_2m || [],
+        };
+        tempContainer.innerHTML = '';
+        renderTempChart(tempData, tempContainer);
+      }
+
+      if (uvContainer) {
+        const uvData = {
+          time: hourlyTime,
+          uv_index: data.hourly?.uv_index || [],
+        };
+        uvContainer.innerHTML = '';
+        renderUvChart(uvData, uvContainer);
+      }
+
     } catch (error) {
-      
+      console.error("❌ 모든 차트 데이터 불러오기 실패:", error);
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    if (window.currentWeatherLat && window.currentWeatherLng) {
-      window.updateRainChartWithNewLocation(window.currentWeatherLat, window.currentWeatherLng);
-    } else {
-      console.warn("🌐 날씨 데이터를 불러올 위치 정보가 없습니다.");
-    }
-  });
+  // 위치 정보 준비 후 updateAllChartsWithNewLocation(lat, lng) 호출 필요
+
+  window.updateAllChartsWithNewLocation = function(lat, lng) {
+    fetchAllCharts(lat, lng);
+  };
+
+  window.setCurrentLocationAndRenderCharts = function(lat, lng) {
+    window.currentWeatherLat = lat;
+    window.currentWeatherLng = lng;
+    window.updateAllChartsWithNewLocation(lat, lng);
+  };
 </script>
 <script>
 window.updateRainChartWithNewLocation = async function (lat, lng) {
@@ -245,8 +270,34 @@ window.updateRainChartWithNewLocation = async function (lat, lng) {
     weatherCardFront.addEventListener('click', toggleFlip);
 
     const flipBack = flipContainer.querySelector('.flip-back');
-    flipBack.addEventListener('click', toggleFlip);
+    flipBack.addEventListener('click', (event) => {
+      const isButton = event.target.closest('button');
+      if (!isButton) toggleFlip();
+    });
   </script>
-</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const rainBtn = document.getElementById('btn-rain');
+      const tempBtn = document.getElementById('btn-temp');
+      const uvBtn = document.getElementById('btn-uv');
+      const rainChart = document.getElementById('rain-chart');
+      const tempChart = document.getElementById('temp-chart');
+      const uvChart = document.getElementById('uv-chart');
+
+      function showChart(target) {
+        rainChart.classList.add('hidden');
+        tempChart.classList.add('hidden');
+        uvChart.classList.add('hidden');
+
+        if (target === 'rain') rainChart.classList.remove('hidden');
+        if (target === 'temp') tempChart.classList.remove('hidden');
+        if (target === 'uv') uvChart.classList.remove('hidden');
+      }
+
+      rainBtn.addEventListener('click', () => showChart('rain'));
+      tempBtn.addEventListener('click', () => showChart('temp'));
+      uvBtn.addEventListener('click', () => showChart('uv'));
+    });
+  </script>
   </body>
 </html>

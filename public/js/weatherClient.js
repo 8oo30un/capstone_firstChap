@@ -56,8 +56,9 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
     const locationEl = document.getElementById("location-name");
     if (locationEl) locationEl.innerText = cityName;
 
+    // Updated fetch URL with temperature_2m_max and temperature_2m_min added
     const response = await fetch(
-      `/api/weather?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode&daily=sunrise,sunset&timezone=Asia%2FSeoul`
+      `/api/weather?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode&daily=sunrise,sunset,uv_index_max,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul`
     );
     if (!response.ok) throw new Error("API 호출 실패");
 
@@ -114,16 +115,21 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
         tempRangeEl.textContent = `🌡️ 최고: ${max ?? "--"}℃ / 최저: ${
           min ?? "--"
         }℃`;
+        console.log("🌡️ 최고/최저 기온:", max, min);
       }
 
       const uvIndexEl = document.getElementById("uv-index");
       if (uvIndexEl) {
-        uvIndexEl.textContent = `☀️ 자외선 지수: --`; // Placeholder
+        const uv = data.daily.uv_index_max?.[0];
+        uvIndexEl.textContent = `☀️ 자외선 지수: ${uv ?? "--"}`;
+        console.log("☀️ 자외선 지수:", uv);
       }
 
       const pm25El = document.getElementById("pm25-level");
       if (pm25El) {
-        pm25El.textContent = `🌫️ 미세먼지(PM2.5): -- ㎍/㎥`; // Placeholder
+        const pm25 = data.hourly.pm2_5?.[0];
+        pm25El.textContent = `🌫️ 미세먼지(PM2.5): ${pm25 ?? "--"} ㎍/㎥`;
+        console.log("🌫️ 미세먼지(PM2.5):", pm25);
       }
     }
 
