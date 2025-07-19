@@ -1,9 +1,6 @@
-// Assumes Chart is loaded globally via CDN in index.html
-
 // This function receives hourly data and renders the chart into the element with id "rain-chart"
 export function renderRainChart(hourlyData) {
   const container = document.getElementById("rain-chart");
-  console.log("Chart container:", container);
   if (!container) return;
 
   // Clear existing content
@@ -67,16 +64,11 @@ export function renderRainChart(hourlyData) {
 }
 
 // Render temperature chart
-export function renderTempChart(hourlyData) {
-  const container = document.getElementById("temp-chart");
-  console.log("📊 temp-chart container found:", container);
-  console.log("🌡️ temperature_2m data:", hourlyData.temperature_2m);
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  const canvas = document.createElement("canvas");
-  container.appendChild(canvas);
+export function renderTempChart(hourlyData, canvas) {
+  if (!canvas) {
+    console.error("Canvas element is missing");
+    return;
+  }
 
   const ctx = canvas.getContext("2d");
 
@@ -86,7 +78,7 @@ export function renderTempChart(hourlyData) {
   });
 
   const data = {
-    labels: labels,
+    labels,
     datasets: [
       {
         label: "기온 (°C)",
@@ -97,44 +89,51 @@ export function renderTempChart(hourlyData) {
       },
     ],
   };
-  console.log("📈 Rendering temperature chart with data:", data);
 
   const config = {
     type: "line",
-    data: data,
+    data,
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          display: false,
-        },
+        legend: { display: false },
         tooltip: {
           callbacks: {
-            label: function (context) {
-              return `${context.parsed.y} °C`;
-            },
+            label: (context) => `${context.parsed.y} °C`,
           },
         },
       },
       scales: {
         y: {
           beginAtZero: false,
-          title: {
-            display: true,
-            text: "기온 (°C)",
-          },
+          title: { display: true, text: "기온 (°C)" },
         },
       },
     },
   };
 
-  new Chart(ctx, config);
+  // 기존에 차트가 있으면 제거하고 새로 그리기
+  if (canvas.chartInstance) {
+    canvas.chartInstance.destroy();
+  }
+  console.log("Rendering temp chart with data:", data);
+
+  canvas.chartInstance = new Chart(ctx, config);
 }
 
 // Render UV index chart
 export function renderUvChart(hourlyData) {
+  console.log("🧪 전체 hourlyData 확인:", hourlyData);
+  console.log("🔥 renderUvChart called");
   const container = document.getElementById("uv-chart");
+  console.log("📊 uv-chart container found:", container);
+  console.log("🌞 uv_index data:", hourlyData.uv_index);
+
   if (!container) return;
+  if (!hourlyData || !hourlyData.uv_index || !hourlyData.time) {
+    console.error("🚨 uv_index or time data is missing in hourlyData");
+    return;
+  }
 
   container.innerHTML = "";
 
@@ -191,4 +190,42 @@ export function renderUvChart(hourlyData) {
   };
 
   new Chart(ctx, config);
+}
+
+// Render all charts from external hourly data
+export function fetchAllCharts(hourlyData) {
+  const rainContainer = document.getElementById("rain-chart");
+  const tempContainer = document.getElementById("temp-chart");
+  const uvContainer = document.getElementById("uv-chart");
+
+  if (rainContainer && hourlyData.precipitation) {
+    rainContainer.innerHTML = "";
+    const rainData = {
+      time: hourlyData.time,
+      precipitation: hourlyData.precipitation,
+    };
+    renderRainChart(rainData);
+  }
+
+  if (tempContainer && hourlyData.temperature_2m) {
+    const tempCanvas = document.createElement("canvas");
+    tempContainer.innerHTML = "";
+    tempContainer.appendChild(tempCanvas);
+    const tempData = {
+      time: hourlyData.time,
+      temperature_2m: hourlyData.temperature_2m,
+    };
+    renderTempChart(tempData, tempCanvas);
+  }
+
+  if (uvContainer && hourlyData.uv_index) {
+    const uvCanvas = document.createElement("canvas");
+    uvContainer.innerHTML = "";
+    uvContainer.appendChild(uvCanvas);
+    const uvData = {
+      time: hourlyData.time,
+      uv_index: hourlyData.uv_index,
+    };
+    renderUvChart(uvData);
+  }
 }

@@ -21,10 +21,6 @@ export async function updateBackground(weatherCode) {
     const data = await response.json();
     const imageUrl = data.urls.full;
 
-    console.log(
-      `날씨 코드 ${weatherCode} (${keyword}) → 배경 이미지: ${imageUrl}`
-    );
-
     const img = new Image();
     img.src = imageUrl;
     img.onload = () => {

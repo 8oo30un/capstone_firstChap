@@ -29,8 +29,6 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       location.href = location.href.replace(/^http:/, "https:");
     }
 
-    console.log("Selected coordinates:", latitude, longitude);
-
     let cityName = "알 수 없음";
     try {
       const geoRes = await fetch(
@@ -63,6 +61,13 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
     if (!response.ok) throw new Error("API 호출 실패");
 
     const data = await response.json();
+    window.weatherHourlyData = {
+      time: data.hourly.time,
+      temperature_2m: data.hourly?.temperature_2m || [],
+      uv_index: data.hourly?.uv_index || [],
+      precipitation: data.hourly?.precipitation || [],
+    };
+    console.log("🌡️ 시간별 기온 및 자외선 데이터:", window.weatherHourlyData);
     const weatherElement = document.getElementById("weather");
 
     const temp = data.current_weather.temperature;
@@ -115,25 +120,32 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
         tempRangeEl.textContent = `🌡️ 최고: ${max ?? "--"}℃ / 최저: ${
           min ?? "--"
         }℃`;
-        console.log("🌡️ 최고/최저 기온:", max, min);
       }
 
       const uvIndexEl = document.getElementById("uv-index");
       if (uvIndexEl) {
         const uv = data.daily.uv_index_max?.[0];
         uvIndexEl.textContent = `☀️ 자외선 지수: ${uv ?? "--"}`;
-        console.log("☀️ 자외선 지수:", uv);
       }
 
       const pm25El = document.getElementById("pm25-level");
       if (pm25El) {
         const pm25 = data.hourly.pm2_5?.[0];
         pm25El.textContent = `🌫️ 미세먼지(PM2.5): ${pm25 ?? "--"} ㎍/㎥`;
-        console.log("🌫️ 미세먼지(PM2.5):", pm25);
       }
     }
 
     updateBackCardDetails(data);
+    // 📊 차트 렌더링 함수 호출
+    const chartsModule = await import("./chart.js");
+    if (typeof chartsModule.fetchAllCharts === "function") {
+      console.log(
+        "📈 fetchWeather에서 fetchAllCharts 호출됨 (with hourly data)"
+      );
+      chartsModule.fetchAllCharts(window.weatherHourlyData);
+    } else {
+      console.warn("⚠️ fetchAllCharts 함수가 chart.js에 존재하지 않음");
+    }
   } catch (error) {
     console.error("날씨 정보를 불러오는 데 실패했습니다.", error);
   }

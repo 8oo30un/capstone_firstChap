@@ -66,7 +66,7 @@
         ></path>
       </svg>
     </div>
-    <div class="flip-container relative w-full max-w-md h-[300px]" id="flip-container">
+    <div class="flip-container relative w-full max-w-md h-[400px]" id="flip-container">
       <div class="flip-card absolute w-full h-full">
         <!-- Front side -->
         <div class="flip-front absolute inset-0 bg-white/20 dark:bg-gray-900/30 rounded-xl p-6 text-xl font-medium text-center shadow-lg backdrop-blur-md cursor-pointer" id="weather-card-front">
@@ -81,9 +81,9 @@
             <div class="flex flex-col gap-4">
   <h3 class="text-xl font-semibold mb-2">📊 오늘의 날씨 데이터</h3>
   <div class="flex justify-center gap-2 mb-2">
-    <button type="button" id="btn-rain" class="px-3 py-1 rounded bg-blue-600 text-white text-sm">강수량</button>
-    <button type="button" id="btn-temp" class="px-3 py-1 rounded bg-red-600 text-white text-sm">기온</button>
-    <button type="button" id="btn-uv" class="px-3 py-1 rounded bg-yellow-500 text-black text-sm">자외선</button>
+    <button type="button" id="btn-rain" class="px-3 py-1 rounded bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 text-white text-sm">강수량</button>
+    <button type="button" id="btn-temp" class="px-3 py-1 rounded bg-gradient-to-r from-red-400 via-red-500 to-red-600 text-white text-sm">기온</button>
+    <button type="button" id="btn-uv" class="px-3 py-1 rounded bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 text-black text-sm">자외선</button>
   </div>
   <div id="rain-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left hidden">강수량 차트 영역</div>
   <div id="temp-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left hidden">기온 차트 영역</div>
@@ -170,68 +170,6 @@
     <script type="module" src="./js/chart.js"></script>
 
 <script type="module">
-  import { renderRainChart, renderTempChart, renderUvChart } from './js/chart.js';
-
-  async function fetchAllCharts(lat, lng) {
-      console.log("fetchAllCharts 시작", lat, lng);
-
-    try {
-      const rainContainer = document.getElementById('rain-chart');
-      const tempContainer = document.getElementById('temp-chart');
-      const uvContainer = document.getElementById('uv-chart');
-
-      const response = await fetch(`/api/weather?latitude=${lat}&longitude=${lng}&hourly=precipitation,temperature_2m,uv_index&timezone=Asia%2FSeoul`);
-      if (!response.ok) throw new Error('API 호출 실패');
-
-      const data = await response.json();
-
-      const hourlyTime = data.hourly?.time || [];
-
-      if (rainContainer) {
-        const rainData = {
-          time: hourlyTime,
-          precipitation: data.hourly?.precipitation || [],
-        };
-        rainContainer.innerHTML = '';
-        renderRainChart(rainData, rainContainer);
-      }
-
-      if (tempContainer) {
-        const tempData = {
-          time: hourlyTime,
-          temperature_2m: data.hourly?.temperature_2m || [],
-        };
-        tempContainer.innerHTML = '';
-        renderTempChart(tempData, tempContainer);
-      }
-
-      if (uvContainer) {
-        const uvData = {
-          time: hourlyTime,
-          uv_index: data.hourly?.uv_index || [],
-        };
-        uvContainer.innerHTML = '';
-        renderUvChart(uvData, uvContainer);
-      }
-
-    } catch (error) {
-      console.error("❌ 모든 차트 데이터 불러오기 실패:", error);
-    }
-  }
-
-  // 위치 정보 준비 후 updateAllChartsWithNewLocation(lat, lng) 호출 필요
-
-  window.updateAllChartsWithNewLocation = function(lat, lng) {
-    fetchAllCharts(lat, lng);
-  };
-
-  window.setCurrentLocationAndRenderCharts = function(lat, lng) {
-    window.currentWeatherLat = lat;
-    window.currentWeatherLng = lng;
-    window.updateAllChartsWithNewLocation(lat, lng);
-  };
-</script>
-<script>
 window.updateRainChartWithNewLocation = async function (lat, lng) {
   try {
     const chartContainer = document.getElementById('rain-chart');
@@ -299,5 +237,94 @@ window.updateRainChartWithNewLocation = async function (lat, lng) {
       uvBtn.addEventListener('click', () => showChart('uv'));
     });
   </script>
+  <script type="module">
+  import { renderRainChart, renderTempChart, renderUvChart } from './js/chart.js';
+
+  async function fetchAllCharts() {
+    console.log("🚀 fetchAllCharts 함수 진입");
+    const lat = window.currentWeatherLat;
+    const lng = window.currentWeatherLng;
+    console.log("📍 fetchAllCharts 위치 정보:", lat, lng);
+
+    try {
+      const rainContainer = document.getElementById('rain-chart');
+      const tempContainer = document.getElementById('temp-chart');
+      const uvContainer = document.getElementById('uv-chart');
+
+      console.log("📡 Fetching weather data with hourly: precipitation, temperature_2m, uv_index");
+      const response = await fetch(`/api/weather?latitude=${lat}&longitude=${lng}&hourly=precipitation,temperature_2m,uv_index&timezone=Asia%2FSeoul`);
+      if (!response.ok) throw new Error('API 호출 실패');
+
+      const data = await response.json();
+      console.log("✅ Weather API Response:", data);
+
+      const hourlyTime = data.hourly?.time || [];
+
+      if (rainContainer) {
+        const rainData = {
+          time: hourlyTime,
+          precipitation: data.hourly?.precipitation || [],
+        };
+        rainContainer.innerHTML = '';
+        renderRainChart(rainData, rainContainer);
+      }
+
+      if (tempContainer) {
+        const tempCanvas = document.createElement('canvas');
+        tempContainer.innerHTML = '';
+        tempContainer.appendChild(tempCanvas);
+        const tempData = {
+          time: data.hourly.time,
+          temperature_2m: data.hourly.temperature_2m || [],
+        };
+        console.log("📊 호출됨 - renderTempChart with:", tempData);
+        renderTempChart(tempData, tempCanvas);
+      }
+
+      if (uvContainer) {
+        const uvCanvas = document.createElement('canvas');
+        uvContainer.innerHTML = '';
+        uvContainer.appendChild(uvCanvas);
+        const uvData = {
+          time: hourlyTime,
+          uv_index: data.hourly?.uv_index || [],
+        };
+        console.log("🌈 호출됨 - renderUvChart with:", uvData);
+        renderUvChart(uvData, uvCanvas);
+      }
+    
+
+    } catch (error) {
+      console.error("❌ 모든 차트 데이터 불러오기 실패:", error);
+    }
+  }
+
+  // 위치 정보 준비 후 updateAllChartsWithNewLocation(lat, lng) 호출 필요
+
+  window.updateAllChartsWithNewLocation = function() {
+    console.log("🔄 updateAllChartsWithNewLocation 호출됨");
+    fetchAllCharts();
+  };
+
+  window.setCurrentLocationAndRenderCharts = function(lat, lng) {
+    window.currentWeatherLat = lat;
+    window.currentWeatherLng = lng;
+    window.updateAllChartsWithNewLocation();
+  };
+
+  window.addEventListener('locationupdated', () => {
+    if (typeof window.currentWeatherLat !== 'undefined' && typeof window.currentWeatherLng !== 'undefined') {
+      fetchAllCharts();
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof window.currentWeatherLat !== 'undefined' && typeof window.currentWeatherLng !== 'undefined') {
+      fetchAllCharts();
+    } else {
+      console.warn("초기 위치 정보가 없습니다. 차트가 로드되지 않습니다.");
+    }
+  });
+</script>
   </body>
 </html>
