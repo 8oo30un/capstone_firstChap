@@ -52,7 +52,9 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       console.warn("서버리스 위치 정보를 가져오는 데 실패했습니다.", e);
     }
     const locationEl = document.getElementById("location-name");
+    const locationBackEl = document.getElementById("location-name-back");
     if (locationEl) locationEl.innerText = cityName;
+    if (locationBackEl) locationBackEl.innerText = cityName;
 
     // Updated fetch URL with temperature_2m_max and temperature_2m_min added
     const response = await fetch(

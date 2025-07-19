@@ -70,24 +70,24 @@
       <div class="flip-card absolute w-full h-full">
         <!-- Front side -->
         <div class="flip-front absolute inset-0 bg-white/20 dark:bg-gray-900/30 rounded-xl p-6 text-xl font-medium text-center shadow-lg backdrop-blur-md cursor-pointer" id="weather-card-front">
-          <h1 class="text-3xl font-bold mb-4">오늘의 날씨</h1>
-          <h2 id="location-name" class="text-lg font-medium mb-2"></h2>
+<h1 class="text-3xl font-bold mb-4"><span id="location-name"></span>의 날씨</h1>         
           <h2 id="weather-keyword" class="text-xl font-semibold mb-4 tracking-wide"></h2>
+          <img id="front-card-image" class="w-full h-32 object-cover rounded-md mb-4" src="" alt="날씨 이미지" />
           <div id="weather">날씨 정보를 불러오는 중...</div>
         </div>
         <!-- Back side -->
-        <div class="flip-back absolute inset-0 bg-white/10 dark:bg-gray-800/30 rounded-xl p-6 text-center shadow-lg backdrop-blur-md cursor-pointer flex items-center justify-center">
+        <div class="flip-back absolute inset-0 bg-white/10 dark:bg-gray-800/30 rounded-xl p-6 text-center shadow-lg backdrop-blur-md cursor-pointer flex items-center justify-center px-8">
           <div id="back-card-content" class="text-white text-lg">
             <div class="flex flex-col gap-4">
-  <h3 class="text-xl font-semibold mb-2">📊 오늘의 날씨 데이터</h3>
+  <h3 class="text-xl font-semibold mb-2"> <span id="location-name-back">현재위치</span>의 날씨 데이터</h3>
   <div class="flex justify-center gap-2 mb-2">
     <button type="button" id="btn-rain" class="px-3 py-1 rounded bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 text-white text-sm">강수량</button>
     <button type="button" id="btn-temp" class="px-3 py-1 rounded bg-gradient-to-r from-red-400 via-red-500 to-red-600 text-white text-sm">기온</button>
     <button type="button" id="btn-uv" class="px-3 py-1 rounded bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 text-black text-sm">자외선</button>
   </div>
-  <div id="rain-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left hidden">강수량 차트 영역</div>
-  <div id="temp-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left hidden">기온 차트 영역</div>
-  <div id="uv-chart" class="h-32 bg-white/10 rounded-md p-2 text-xs text-left hidden">자외선 차트 영역</div>
+  <div id="rain-chart" class="h-32 w-full bg-white/10 rounded-md  text-sm text-left hidden">강수량 차트 영역</div>
+  <div id="temp-chart" class="h-32 w-full bg-white/10 rounded-md  text-sm text-left hidden">기온 차트 영역</div>
+  <div id="uv-chart" class="h-32 w-full bg-white/10 rounded-md  text-sm text-left hidden">자외선 차트 영역</div>
   <div id="temperature-range" class="text-sm text-gray-300">🌡️ 최고: --℃ / 최저: --℃</div>
   <div id="uv-index" class="text-sm text-yellow-300">☀️ 자외선 지수: --</div>
   <div id="pm25-level" class="text-sm text-green-300">🌫️ 미세먼지(PM2.5): -- ㎍/㎥</div>

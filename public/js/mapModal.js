@@ -61,6 +61,7 @@ async function updateMiniModalImage(cityName, weatherCode) {
     const imageUrl = imageData.results?.[0]?.urls?.regular;
 
     const imgEl = document.getElementById("mini-modal-image");
+
     const keywordEl = document.getElementById("mini-weather-keyword");
 
     if (imgEl && imageUrl) {

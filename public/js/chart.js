@@ -35,6 +35,12 @@ export function renderRainChart(hourlyData) {
     data: data,
     options: {
       responsive: true,
+      layout: {
+        padding: {
+          top: 20,
+          right: 20,
+        },
+      },
       plugins: {
         legend: {
           display: false,
@@ -95,6 +101,12 @@ export function renderTempChart(hourlyData, canvas) {
     data,
     options: {
       responsive: true,
+      layout: {
+        padding: {
+          top: 20,
+          right: 20,
+        },
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -165,6 +177,12 @@ export function renderUvChart(hourlyData) {
     data: data,
     options: {
       responsive: true,
+      layout: {
+        padding: {
+          top: 20,
+          right: 20,
+        },
+      },
       plugins: {
         legend: {
           display: false,
