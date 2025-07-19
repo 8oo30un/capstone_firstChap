@@ -56,9 +56,35 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
     if (locationEl) locationEl.innerText = cityName;
     if (locationBackEl) locationBackEl.innerText = cityName;
 
+    // --- 여기서부터 이미지 로딩 코드 추가 ---
+    try {
+      const UNSPLASH_ACCESS_KEY = "6opG7_SAJq3D33Om0rA9MZ4SwiangrDuHuR9zu96Vvs"; // Replace with actual key
+      const unsplashResponse = await fetch(
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
+          cityName
+        )}&client_id=${UNSPLASH_ACCESS_KEY}&orientation=landscape&per_page=1`
+      );
+      if (unsplashResponse.ok) {
+        const unsplashData = await unsplashResponse.json();
+        const imageUrl =
+          unsplashData.results?.[0]?.urls?.regular ||
+          "https://images.unsplash.com/photo-1506744038136-46273834b3fb"; // 기본 이미지 fallback
+        const frontCardImage = document.getElementById("front-card-image");
+        if (frontCardImage) {
+          frontCardImage.src = imageUrl;
+          frontCardImage.alt = `${cityName} 풍경 이미지`;
+        }
+      } else {
+        console.warn("Unsplash 이미지 요청 실패:", unsplashResponse.status);
+      }
+    } catch (e) {
+      console.warn("이미지 요청 중 에러 발생:", e);
+    }
+    // --- 여기까지 이미지 로딩 코드 ---
+
     // Updated fetch URL with temperature_2m_max and temperature_2m_min added
     const response = await fetch(
-      `/api/weather?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode&daily=sunrise,sunset,uv_index_max,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul`
+      `/api/weather?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode,uv_index&daily=sunrise,sunset,uv_index_max,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul`
     );
     if (!response.ok) throw new Error("API 호출 실패");
 

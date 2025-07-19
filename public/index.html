@@ -90,7 +90,6 @@
   <div id="uv-chart" class="h-32 w-full bg-white/10 rounded-md  text-sm text-left hidden">자외선 차트 영역</div>
   <div id="temperature-range" class="text-sm text-gray-300">🌡️ 최고: --℃ / 최저: --℃</div>
   <div id="uv-index" class="text-sm text-yellow-300">☀️ 자외선 지수: --</div>
-  <div id="pm25-level" class="text-sm text-green-300">🌫️ 미세먼지(PM2.5): -- ㎍/㎥</div>
 </div>
           </div>
         </div>
@@ -155,11 +154,12 @@
     id="mini-info-modal"
     class="bg-white/90 dark:bg-gray-800/90 dark:text-white w-[30%] h-[90%] rounded-lg shadow-lg p-6 flex flex-col justify-center gap-6 ml-4"
   >
+      <img id="mini-modal-image" class="w-full h-full object-cover rounded-t-md" />
     <h2 id="mini-city-name" class="text-xl font-bold text-center">도시명: --</h2>
+    <div id="mini-weather-keyword" class="text-sm mt-2 font-medium text-gray-300"></div>
+
     <p id="mini-precipitation" class="text-lg font-semibold">강수량: -- mm ☔</p>
     <p id="mini-wind" class="text-lg font-semibold">풍속: -- km/h 💨</p>
-    <img id="mini-modal-image" class="w-full h-32 object-cover rounded-t-md" />
-<div id="mini-weather-keyword" class="text-sm mt-2 font-medium text-gray-300"></div>
   </div>
 </div>
 </div>
