@@ -34,7 +34,39 @@ export async function updateBackground(weatherCode) {
     };
   } catch (error) {
     console.error("배경 이미지 불러오기 실패", error);
-    document.body.style.backgroundImage =
-      "url('/images/default-background.JPG')";
+    // ✅ fallback 배경
+    const body = document.body;
+    switch (keyword) {
+      case "clear sunny":
+        body.style.background =
+          "linear-gradient(to bottom right, #fceabb, #f8b500)";
+        break;
+      case "overcast cloudy":
+        body.style.background =
+          "linear-gradient(to bottom right, #bdc3c7, #2c3e50)";
+        break;
+      case "rainy day":
+        body.style.background =
+          "linear-gradient(to bottom right, #3a6073, #16222a)";
+        break;
+      case "snowy winter":
+        body.style.background =
+          "linear-gradient(to bottom right, #e6dada, #274046)";
+        break;
+      case "thunderstorm lightning":
+        body.style.background =
+          "linear-gradient(to bottom right, #373b44, #4286f4)";
+        break;
+      default:
+        body.style.background =
+          "linear-gradient(to bottom right, #a1c4fd, #c2e9fb)";
+    }
+
+    body.style.backgroundSize = "cover";
+    body.style.backgroundRepeat = "no-repeat";
+    body.style.backgroundPosition = "center";
+
+    const spinner = document.getElementById("loading-spinner");
+    if (spinner) spinner.style.display = "none";
   }
 }
