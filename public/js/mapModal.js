@@ -1,3 +1,5 @@
+import { saveFavorite, renderFavorites } from "./favorites.js";
+
 function getWeatherKeyword(code) {
   if (code === 0) return "clear sunny";
   if (code >= 1 && code <= 3) return "overcast cloudy";
@@ -220,6 +222,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const openBtn = document.getElementById("open-map-modal");
   const closeBtn = document.getElementById("close-map-modal");
   const confirmBtn = document.getElementById("confirm-location");
+
+  const addFavoriteBtn = document.getElementById("add-favorite");
+  addFavoriteBtn.addEventListener("click", () => {
+    const name = document
+      .getElementById("mini-city-name")
+      .textContent.replace("도시명: ", "");
+    const lat = selectedCoords.lat;
+    const lng = selectedCoords.lng;
+    const imageUrl = document.getElementById("mini-modal-image").src;
+    const weatherKeyword =
+      document.getElementById("mini-weather-keyword")?.textContent || "";
+
+    console.log("⭐ 즐겨찾기 저장:", { name, lat, lng, imageUrl });
+
+    if (!name || !lat || !lng) return;
+
+    saveFavorite(name, lat, lng, imageUrl, weatherKeyword);
+
+    // 모달 닫기
+    modalContainer.classList.add("hidden");
+  });
 
   openBtn.addEventListener("click", () => {
     modalContainer.classList.remove("hidden");

@@ -98,18 +98,18 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
     console.log("🌡️ 시간별 기온 및 자외선 데이터:", window.weatherHourlyData);
     const weatherElement = document.getElementById("weather");
 
-    const temp = data.current_weather.temperature;
-    const wind = data.current_weather.windspeed;
-    const humidity = data.hourly.relative_humidity_2m[0];
-    const precipitation = data.hourly.precipitation[0];
-    const sunrise = data.daily.sunrise[0];
-    const sunset = data.daily.sunset[0];
+    if (weatherElement) {
+      const temp = data.current_weather.temperature;
+      const wind = data.current_weather.windspeed;
+      const humidity = data.hourly.relative_humidity_2m[0];
+      const precipitation = data.hourly.precipitation[0];
 
-    weatherElement.innerText =
-      `현재 기온: ${temp}°C\n` +
-      `풍속: ${wind} km/h\n` +
-      `습도: ${humidity}%\n` +
-      `강수량: ${precipitation} mm\n`;
+      weatherElement.innerText =
+        `현재 기온: ${temp}°C\n` +
+        `풍속: ${wind} km/h\n` +
+        `습도: ${humidity}%\n` +
+        `강수량: ${precipitation} mm\n`;
+    }
 
     const code = data.current_weather.weathercode;
     const { updateBackground } = await import("./weatherBackground.js");
@@ -166,6 +166,18 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
     updateBackCardDetails(data);
     // 📊 차트 렌더링 함수 호출
     const chartsModule = await import("./chart.js");
+
+    window.weatherHourlyData = {
+      time: data.hourly.time,
+      temperature_2m: data.hourly?.temperature_2m || [],
+      uv_index: data.hourly?.uv_index || [],
+      precipitation: data.hourly?.precipitation || [],
+    };
+    console.log(
+      "✅ 최신 window.weatherHourlyData 설정됨:",
+      window.weatherHourlyData
+    );
+
     if (typeof chartsModule.fetchAllCharts === "function") {
       console.log(
         "📈 fetchWeather에서 fetchAllCharts 호출됨 (with hourly data)"

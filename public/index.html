@@ -134,12 +134,20 @@
     <div
       class="p-4 flex justify-between items-center border-t border-gray-300 dark:border-gray-700"
     >
-      <button
-        id="confirm-location"
-        class="bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white px-6 py-2 rounded-md transition"
-      >
-        이 위치로 보기
-      </button>
+      <div class="flex gap-4">
+        <button
+          id="confirm-location"
+          class="bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white px-4 py-2 rounded-md transition"
+        >
+          이 위치로 보기
+        </button>
+        <button
+          id="add-favorite"
+          class="bg-yellow-500 dark:bg-yellow-600 hover:bg-yellow-600 dark:hover:bg-yellow-700 text-white px-4 py-2 rounded-md transition"
+        >
+          즐겨찾기 추가
+        </button>
+      </div>
       <button
         id="close-map-modal"
         class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
@@ -166,6 +174,10 @@
     <div id="prep-items" class="fixed right-4 top-4 bg-white/20 dark:bg-gray-800/40 text-white p-4 rounded-lg max-w-xs shadow-lg backdrop-blur-md z-40">
       <h3 class="text-lg font-semibold mb-2">오늘의 추천 준비물</h3>
       <ul id="prep-list" class="list-disc list-inside space-y-1 text-sm"></ul>
+    </div>
+    <div id="favorites-container" class="fixed right-4 top-[220px] bg-white/20 dark:bg-gray-800/40 text-white p-4 rounded-lg max-w-xs shadow-lg backdrop-blur-md z-40">
+      <h3 class="text-lg font-semibold mb-2">   즐겨찾기   </h3>
+      <div id="favorites-list" class="flex flex-col gap-3"></div>
     </div>
     <script type="module" src="./js/chart.js"></script>
 
@@ -221,6 +233,8 @@ window.updateRainChartWithNewLocation = async function (lat, lng) {
       const rainChart = document.getElementById('rain-chart');
       const tempChart = document.getElementById('temp-chart');
       const uvChart = document.getElementById('uv-chart');
+      
+
 
       function showChart(target) {
         rainChart.classList.add('hidden');
@@ -326,5 +340,12 @@ window.updateRainChartWithNewLocation = async function (lat, lng) {
     }
   });
 </script>
+  <script type="module">
+    import { renderFavorites } from './js/favorites.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFavorites();
+    });
+  </script>
   </body>
 </html>

@@ -34,5 +34,7 @@ export async function updateBackground(weatherCode) {
     };
   } catch (error) {
     console.error("배경 이미지 불러오기 실패", error);
+    document.body.style.backgroundImage =
+      "url('/images/default-background.JPG')";
   }
 }
