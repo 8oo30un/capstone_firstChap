@@ -2,7 +2,22 @@
 <html lang="ko" class="scroll-smooth dark">
   <head>
     <meta charset="UTF-8" />
-    <title>날씨 앱</title>
+    <title>Woo's Weather</title>
+    <meta name="description" content="실시간 날씨와 강수량, 자외선 지수를 확인하고 즐겨찾는 도시를 저장할 수 있는 날씨 대시보드 웹 앱입니다.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <meta property="og:title" content="Woo's Weather">
+    <meta property="og:description" content="실시간 날씨 정보를 시각화하고, 즐겨찾는 도시를 저장할 수 있는 웹 앱입니다.">
+    <meta property="og:image" content="https://first-chap.vercel.app/preview.png">
+    <meta property="og:url" content="https://first-chap.vercel.app/">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Woo's Weather">
+<meta name="twitter:description" content="실시간 날씨 정보를 시각화하고, 즐겨찾는 도시를 저장할 수 있는 웹 앱입니다.">
+<meta name="twitter:image" content="https://first-chap.vercel.app/preview.png">
+
     <script type="module" src="/js/weatherClient.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
@@ -35,6 +50,13 @@
 
   .flip-back {
     transform: rotateY(180deg);
+  }
+</style>
+<style>
+  body:not(.js-loaded) #rain-chart,
+  body:not(.js-loaded) #temp-chart,
+  body:not(.js-loaded) #uv-chart {
+    display: none !important;
   }
 </style>
   </head>
@@ -85,9 +107,9 @@
     <button type="button" id="btn-temp" class="px-3 py-1 rounded bg-gradient-to-r from-red-400 via-red-500 to-red-600 text-white text-sm">기온</button>
     <button type="button" id="btn-uv" class="px-3 py-1 rounded bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 text-black text-sm">자외선</button>
   </div>
-  <div id="rain-chart" class="h-32 w-full bg-white/10 rounded-md  text-sm text-left hidden">강수량 차트 영역</div>
-  <div id="temp-chart" class="h-32 w-full bg-white/10 rounded-md  text-sm text-left hidden">기온 차트 영역</div>
-  <div id="uv-chart" class="h-32 w-full bg-white/10 rounded-md  text-sm text-left hidden">자외선 차트 영역</div>
+  <div id="rain-chart" class="hidden h-32 w-full bg-white/10 rounded-md  text-sm text-left ">강수량 차트 영역</div>
+  <div id="temp-chart" class="hidden h-32 w-full bg-white/10 rounded-md  text-sm text-left ">기온 차트 영역</div>
+  <div id="uv-chart" class="hidden h-32 w-full bg-white/10 rounded-md  text-sm text-left ">자외선 차트 영역</div>
   <div id="temperature-range" class="text-sm text-gray-300">🌡️ 최고: --℃ / 최저: --℃</div>
   <div id="uv-index" class="text-sm text-yellow-300">☀️ 자외선 지수: --</div>
 </div>
@@ -281,6 +303,7 @@ window.updateRainChartWithNewLocation = async function (lat, lng) {
         };
         rainContainer.innerHTML = '';
         renderRainChart(rainData, rainContainer);
+        rainContainer.classList.add('hidden');
       }
 
       if (tempContainer) {
@@ -293,6 +316,7 @@ window.updateRainChartWithNewLocation = async function (lat, lng) {
         };
         console.log("📊 호출됨 - renderTempChart with:", tempData);
         renderTempChart(tempData, tempCanvas);
+        tempContainer.classList.add('hidden');
       }
 
       if (uvContainer) {
@@ -305,6 +329,7 @@ window.updateRainChartWithNewLocation = async function (lat, lng) {
         };
         console.log("🌈 호출됨 - renderUvChart with:", uvData);
         renderUvChart(uvData, uvCanvas);
+        uvContainer.classList.add('hidden');
       }
     
 
@@ -340,6 +365,11 @@ window.updateRainChartWithNewLocation = async function (lat, lng) {
     }
   });
 </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('js-loaded');
+    });
+  </script>
   <script type="module">
     import { renderFavorites } from './js/favorites.js';
 
