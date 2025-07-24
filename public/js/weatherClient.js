@@ -5,7 +5,10 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
     let latitude = inputLat;
     let longitude = inputLng;
 
-    if (latitude === null || longitude === null) {
+    if (
+      (latitude === null || longitude === null) &&
+      !window.isManualLocationSelected
+    ) {
       const getPosition = () =>
         new Promise((resolve, reject) =>
           navigator.geolocation.getCurrentPosition(resolve, reject)
