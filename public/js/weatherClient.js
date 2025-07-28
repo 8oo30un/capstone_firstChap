@@ -108,10 +108,10 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       const precipitation = data.hourly.precipitation[0];
 
       weatherElement.innerText =
-        `현재 기온: ${temp}°C\n` +
-        `풍속: ${wind} km/h\n` +
-        `습도: ${humidity}%\n` +
-        `강수량: ${precipitation} mm\n`;
+        `current temperature: ${temp}°C\n` +
+        `wind speed: ${wind} km/h\n` +
+        `humidity: ${humidity}%\n` +
+        `precipitation: ${precipitation} mm\n`;
     }
 
     const code = data.current_weather.weathercode;
@@ -120,13 +120,14 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
 
     // Preparation items recommendation and rendering
     function getWeatherItems(code) {
-      if (code === 0) return ["선글라스😎", "자외선 차단제🌞"];
-      if (code >= 1 && code <= 3) return ["얇은 겉옷🥼"];
-      if (code >= 45 && code <= 48) return ["전조등🔦", "감속 운전 🚗 🛑"];
-      if (code >= 51 && code <= 67) return ["우산☔", "장화👢"];
+      if (code === 0) return ["sunglasses😎", "sunscreen🌞"];
+      if (code >= 1 && code <= 3) return ["layer 🥼"];
+      if (code >= 45 && code <= 48)
+        return ["headlight🔦", " drive slowly🚗 🛑"];
+      if (code >= 51 && code <= 67) return ["umbrella☔", "rain boots👢"];
       if (code >= 71 && code <= 86)
-        return ["두꺼운 옷🧥", "장갑🧤", "목도리🧣"];
-      if (code >= 95) return ["우산☔", "비상 손전등🔦", "우비🧥💧"];
+        return ["jacket🧥", "glaves🧤", "muffler🧣"];
+      if (code >= 95) return ["umbrella☔", "headlight🔦", "raincoat🧥💧"];
       return ["기본 준비물📝"];
     }
 
@@ -148,7 +149,7 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       if (tempRangeEl) {
         const max = data.daily.temperature_2m_max?.[0];
         const min = data.daily.temperature_2m_min?.[0];
-        tempRangeEl.textContent = `🌡️ 최고: ${max ?? "--"}℃ / 최저: ${
+        tempRangeEl.textContent = `🌡️ Highest: ${max ?? "--"}℃ / Lowest: ${
           min ?? "--"
         }℃`;
       }
@@ -156,13 +157,7 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       const uvIndexEl = document.getElementById("uv-index");
       if (uvIndexEl) {
         const uv = data.daily.uv_index_max?.[0];
-        uvIndexEl.textContent = `☀️ 자외선 지수: ${uv ?? "--"}`;
-      }
-
-      const pm25El = document.getElementById("pm25-level");
-      if (pm25El) {
-        const pm25 = data.hourly.pm2_5?.[0];
-        pm25El.textContent = `🌫️ 미세먼지(PM2.5): ${pm25 ?? "--"} ㎍/㎥`;
+        uvIndexEl.textContent = `☀️ UV index: ${uv ?? "--"}`;
       }
     }
 

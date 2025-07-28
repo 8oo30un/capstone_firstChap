@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
       place
-    )}&key=${apiKey}&language=ko&limit=1`;
+    )}&key=${apiKey}&language=en&limit=1`;
     console.log("요청 URL:", url);
 
     const response = await fetch(url);

@@ -125,7 +125,7 @@ async function updateMarkerWithWeather(lat, lng) {
           document.getElementById("weather-city-name") ||
           document.getElementById("mini-city-name");
         if (miniCityEl) {
-          miniCityEl.textContent = `도시명: ${cityNameFromResult}`;
+          miniCityEl.textContent = `city name: ${cityNameFromResult}`;
         }
         if (window.updateWeatherCityName) {
           window.updateWeatherCityName(cityNameFromResult);
@@ -185,9 +185,9 @@ async function updateMarkerWithWeather(lat, lng) {
     const miniWindEl = document.getElementById("mini-wind");
     const miniPrecipitationEl = document.getElementById("mini-precipitation");
 
-    if (miniWindEl) miniWindEl.textContent = `풍속: ${windSpeed} km/h 💨`;
+    if (miniWindEl) miniWindEl.textContent = `wind speed: ${windSpeed} km/h 💨`;
     if (miniPrecipitationEl)
-      miniPrecipitationEl.textContent = `강수량: ${precipitation} mm ☔`;
+      miniPrecipitationEl.textContent = `precipitation: ${precipitation} mm ☔`;
   } catch (err) {
     console.error("Weather fetch failed:", err);
   }
@@ -225,9 +225,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const addFavoriteBtn = document.getElementById("add-favorite");
   addFavoriteBtn.addEventListener("click", () => {
-    const name = document
-      .getElementById("mini-city-name")
-      .textContent.replace("도시명: ", "");
+    const rawText = document.getElementById("mini-city-name").textContent;
+    const name = rawText.replace("city name: ", "").trim();
     const lat = selectedCoords.lat;
     const lng = selectedCoords.lng;
     const imageUrl = document.getElementById("mini-modal-image").src;
