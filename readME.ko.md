@@ -1,6 +1,6 @@
 # Weather Dashboard 프로젝트
 
-![메인 대시보드](./public/favicon3.png)
+## <img src="./public/favicon3.png" alt="메인 대시보드" width="120"/>
 
 ---
 

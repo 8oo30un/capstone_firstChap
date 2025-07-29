@@ -1,8 +1,6 @@
 # Weather Dashboard
 
-![메인 대시보드](./public/favicon3.png)
-
----
+## <img src="./public/favicon3.png" alt="메인 대시보드" width="120"/>
 
 > 🇰🇷 [한국어 버전 보기](./readME.ko.md)
 
@@ -23,7 +21,7 @@ Users can favorite cities, view additional information through a mini modal, and
   - Vanilla development - HTML5
   - Chart.js — for data visualization
   - OpenCage Geocoding API — converts city names to coordinates
-  - Unsplash API — dynamic background images based on weather
+  - Unsplash API — dynamic background images based on weather & cities
 
 - **Backend / API**
   - Open-Meteo API — provides hourly weather data
@@ -33,40 +31,40 @@ Users can favorite cities, view additional information through a mini modal, and
 
 ## Key Features
 
-### 📍 1. Location-Based Weather Display
+### 1. Location-Based Weather Display
 
 - Retrieves real-time temperature, precipitation, and UV index data for the current or selected location
 - Displays data in intuitive hourly charts
 
-### 🏞️ 2. Dynamic Background Images
+### 2. Dynamic Background Images
 
 - Weather codes are mapped to keywords
-- Uses Unsplash API to fetch high-resolution landscape images based on the current weather
+- Uses Unsplash API to fetch high-resolution landscape images based on the current weather or city
 
-### ⭐ 3. Favorite City Management
+### 3. Favorite City Management
 
 - Users can bookmark multiple cities
 - Clicking a favorite instantly updates the UI and weather data for the selected location
 
-### 📋 4. Mini Modal View
+### 4. Mini Modal View
 
 - Includes detailed city info and preview image
 - Offers quick buttons to update the location or add to favorites
 
-### 🖥️ 5. Responsive UI & Smooth UX
+### 5. Responsive UI & Smooth UX
 
 - Card-based interface for clarity and visual appeal
 - Minimal chart animations to reduce flicker and improve performance
 
-### 🌙 6. Dark Mode
+### 6. Dark Mode
 
 - Clean and modern dark theme applied to reduce visual fatigue
 
-### 🧠 7. SEO-Friendly Metadata
+### 7. SEO-Friendly Metadata
 
 - Proper Open Graph and favicon metadata are embedded
 
-### 💾 8. Local Storage
+### 8. Local Storage
 
 - Favorite cities and user interactions are persistently stored in browser localStorage
 
@@ -74,11 +72,11 @@ Users can favorite cities, view additional information through a mini modal, and
 
 ## Screenshots
 
-### 📊 Main Dashboard & Weather Charts
+### Main Dashboard & Weather Charts
 
 ![Main Dashboard](./screenshots/main_dashboard.png)
 
-### 🧾 Mini Modal — Detailed City Info & Favorites
+### Mini Modal — Detailed City Info & Favorites
 
 ![Mini Modal](./screenshots/mini_modal.png)
 
@@ -103,6 +101,6 @@ Users can favorite cities, view additional information through a mini modal, and
 ## Contact
 
 **Developer**: Ray Kim  
-📧 Email: [kwh77974481@gmail.com](mailto:kwh77974481@gmail.com)
+ Email: [kwh77974481@gmail.com](mailto:kwh77974481@gmail.com)
 
 ---
