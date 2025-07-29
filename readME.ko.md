@@ -85,6 +85,7 @@
 
 ## 파일 구조
 
+```plaintext
 .
 ├── .vercel/ # Vercel 배포 설정 디렉토리
 ├── api/ # API 라우트 처리 폴더 (Next.js API 방식)
@@ -104,6 +105,7 @@
 ├── readme.md # 프로젝트 설명 (영문)
 ├── readme.ko.md # 프로젝트 설명 (한글)
 └── vercel.json # Vercel 배포 설정
+```
 
 ---
 

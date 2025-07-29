@@ -84,6 +84,7 @@ Users can favorite cities, view additional information through a mini modal, and
 
 ## File Structure
 
+```plaintext
 .
 ├── .vercel/ # Vercel deployment configuration directory
 ├── api/ # API route handling folder (Next.js API style)
@@ -103,6 +104,7 @@ Users can favorite cities, view additional information through a mini modal, and
 ├── readme.md # Project description (English)
 ├── readme.ko.md # Project description (Korean)
 └── vercel.json # Vercel deployment settings
+```
 
 ---
 
