@@ -1,8 +1,10 @@
-# Weather Dashboard 🌤️
+# Weather Dashboard
 
-> 🇰🇷 [한국어 버전 보기](./readME.ko.md)
+![메인 대시보드](./public/favicon3.png)
 
 ---
+
+> 🇰🇷 [한국어 버전 보기](./readME.ko.md)
 
 ## Overview
 
@@ -18,7 +20,7 @@ Users can favorite cities, view additional information through a mini modal, and
 
 - **Frontend**
 
-  - HTML, CSS, JavaScript (ES6+)
+  - Vanilla development - HTML5
   - Chart.js — for data visualization
   - OpenCage Geocoding API — converts city names to coordinates
   - Unsplash API — dynamic background images based on weather
