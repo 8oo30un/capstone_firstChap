@@ -233,9 +233,6 @@ city name: --</h2>
       <ul id="prep-list" class="list-disc list-inside space-y-1 text-sm text-black dark:text-white"></ul>
     </div>
     <div class="relative">
-      <button id="toggle-favorites" class="md:hidden fixed right-4 bottom-4 text-black bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 dark:bg-gradient-to-r dark:from-[#FDFDFD] dark:to-[#1B486A] dark:text-white px-4 py-2 rounded z-50">
-        Favorites
-      </button>
       <div id="favorites-container" class="fixed right-4 top-[220px] bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 dark:bg-gradient-to-r dark:from-[#FDFDFD] dark:to-[#1B486A] dark:text-white p-4 rounded-lg max-w-xs shadow-lg backdrop-blur-md z-40 max-h-[60vh] overflow-y-auto md:block hidden">
         <h3 class="text-lg font-semibold mb-2 text-black dark:text-white">   My Favorites   </h3>
         <div id="favorites-list" class="flex flex-col gap-3 text-black dark:text-white"> </div>
@@ -405,14 +402,3 @@ city name: --</h2>
 
   </body>
 </html>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const toggleBtn = document.getElementById('toggle-favorites');
-        const favoritesContainer = document.getElementById('favorites-container');
-
-        toggleBtn.addEventListener('click', () => {
-          favoritesContainer.classList.toggle('hidden');
-        });
-      });
-    </script>
