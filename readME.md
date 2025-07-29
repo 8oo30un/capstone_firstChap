@@ -1,79 +1,106 @@
-# Weather Dashboard 프로젝트
+# Weather Dashboard 🌤️
+
+> 🇰🇷 [한국어 버전 보기](./README.ko.md)
 
 ---
 
-## 프로젝트 소개
+## Overview
 
-![메인 대시보드](./screenshots/DashBoard.png)
+![Dashboard Screenshot](./screenshots/DashBoard.png)
 
-본 프로젝트는 위치 기반 실시간 날씨 정보 웹사이트입니다.  
-사용자의 현재 위치 또는 선택한 도시의 날씨 데이터를 다양한 그래프로 시각화하고,  
-도시별 즐겨찾기 기능과 미니 모달을 통한 상세 정보 제공 등을 포함합니다.
+The **Weather Dashboard** is a location-based, real-time weather web application.  
+It provides hourly weather data for the current or selected city, visualized through interactive charts.  
+Users can favorite cities, view additional information through a mini modal, and enjoy dynamic background changes based on weather conditions.
 
 ---
 
-## 사용 기술
+## Technologies Used
 
-- **프론트엔드**
+- **Frontend**
+
   - HTML, CSS, JavaScript (ES6+)
-  - Chart.js: 실시간 날씨 데이터 시각화
-  - OpenCage Geocoding API: 위치명 → 좌표 변환
-  - Unsplash API: 도시별 배경 이미지 제공
-- **백엔드/API**
-  - Open-Meteo API: 날씨 데이터 제공
-  - Vercel 배포 환경
+  - Chart.js — for data visualization
+  - OpenCage Geocoding API — converts city names to coordinates
+  - Unsplash API — dynamic background images based on weather
+
+- **Backend / API**
+  - Open-Meteo API — provides hourly weather data
+  - Vercel — for deployment
 
 ---
 
-## 주요 기능
+## Key Features
 
-### 1. 위치 기반 날씨 정보 표시
+### 📍 1. Location-Based Weather Display
 
-- 현재 위치 혹은 사용자가 지정한 위치의 실시간 기온, 강수량, 자외선 지수 등 제공
-- 주요 날씨 데이터는 1시간 단위로 차트로 시각화
+- Retrieves real-time temperature, precipitation, and UV index data for the current or selected location
+- Displays data in intuitive hourly charts
 
-### 2. 도시별 배경 이미지 자동 변경
+### 🏞️ 2. Dynamic Background Images
 
-- 날씨 상태에 따른 키워드를 Unsplash API로 전달해 풍경 이미지 자동 업데이트
+- Weather codes are mapped to keywords
+- Uses Unsplash API to fetch high-resolution landscape images based on the current weather
 
-### 3. 즐겨찾기 기능
+### ⭐ 3. Favorite City Management
 
-- 사용자가 원하는 도시를 즐겨찾기에 추가 가능
-- 즐겨찾기 도시 클릭 시 해당 도시의 날씨 정보 및 배경으로 즉시 변경
+- Users can bookmark multiple cities
+- Clicking a favorite instantly updates the UI and weather data for the selected location
 
-### 4. 미니 모달 상세 정보
+### 📋 4. Mini Modal View
 
-- 도시별 상세 정보와 이미지가 포함된 미니 모달 제공
-- 모달 내 위치 변경 및 즐겨찾기 추가 기능 포함
+- Includes detailed city info and preview image
+- Offers quick buttons to update the location or add to favorites
 
-### 5. 반응형 UI 및 사용자 경험 개선
+### 🖥️ 5. Responsive UI & Smooth UX
 
-- 카드형 UI로 날씨 정보 직관적 표시
-- 차트 애니메이션 최소화로 깜빡임 방지 및 쾌적한 사용성 제공
+- Card-based interface for clarity and visual appeal
+- Minimal chart animations to reduce flicker and improve performance
 
----
+### 🌙 6. Dark Mode
 
-## 기능별 캡처 화면
+- Clean and modern dark theme applied to reduce visual fatigue
 
-### 1. 메인 대시보드
+### 🧠 7. SEO-Friendly Metadata
 
-## ⭐ 날씨 별 참고 그래프, 즐겨찾기 목록
+- Proper Open Graph and favicon metadata are embedded
 
-![메인 대시보드](./screenshots/main_dashboard.png)
+### 💾 8. Local Storage
 
-### 2. 미니 모달 - 상세 위치 및 즐겨찾기
-
-![미니 모달](./screenshots/mini_modal.png)
-
----
-
-## 기타
-
-- API 호출 제한 문제에 대비해 Unsplash API fallback 이미지 적용
-- 사용자 위치 변경 시 모든 관련 컴포넌트 자동 업데이트 구현
-- 향후 로그인 연동 및 서버 기반 즐겨찾기 동기화 예정
-- 프레임워크로 사이트 리팩토링 예정
+- Favorite cities and user interactions are persistently stored in browser localStorage
 
 ---
 
-**문의**: WooHyun Kim (kwh77974481@gmail.com)
+## Screenshots
+
+### 📊 Main Dashboard & Weather Charts
+
+![Main Dashboard](./screenshots/main_dashboard.png)
+
+### 🧾 Mini Modal — Detailed City Info & Favorites
+
+![Mini Modal](./screenshots/mini_modal.png)
+
+---
+
+## Future Enhancements
+
+- User login + server-side sync for favorites
+- Full mobile-first responsive design
+- Full CRUD support for favorite cities
+- Refactor into a modern framework (e.g., React or Svelte)
+
+---
+
+## Deployment
+
+**Live Demo:**  
+🔗 [https://first-chap.vercel.app](https://first-chap.vercel.app)
+
+---
+
+## Contact
+
+**Developer**: Ray Kim  
+📧 Email: [kwh77974481@gmail.com](mailto:kwh77974481@gmail.com)
+
+---
