@@ -82,6 +82,30 @@ Users can favorite cities, view additional information through a mini modal, and
 
 ---
 
+## File Structure
+
+.
+├── .vercel/ # Vercel deployment configuration directory
+├── api/ # API route handling folder (Next.js API style)
+│ ├── geocode.js # Convert city name → coordinates (latitude/longitude)
+│ ├── reverse-geocode.js # Convert coordinates → city name (reverse geocoding)
+│ └── weather.js # Weather data request API
+├── public/ # Public assets (images, favicons, etc.)
+│ ├── index.html # Main website view (SPA entry point)
+│ ├── js/ # JavaScript files
+│ │ ├── chart.js # Chart rendering and update utilities
+│ │ ├── favorites.js # Favorites save and selection logic
+│ │ ├── mapModal.js # Location search modal UI handling
+│ │ ├── weatherBackground.js # Unsplash-based background image handling
+│ │ └── weatherClient.js # Weather API calls and data rendering
+├── .env # Environment variables (.gitignore included)
+├── .gitignore # Git ignore configuration file
+├── readme.md # Project description (English)
+├── readme.ko.md # Project description (Korean)
+└── vercel.json # Vercel deployment settings
+
+---
+
 ## Future Enhancements
 
 - User login + server-side sync for favorites

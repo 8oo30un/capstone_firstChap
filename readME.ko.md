@@ -83,6 +83,30 @@
 
 ---
 
+## 파일 구조
+
+.
+├── .vercel/ # Vercel 배포 설정 디렉토리
+├── api/ # API 라우트 처리 폴더 (Next.js API 방식)
+│ ├── geocode.js # 도시명 → 좌표 (위도/경도) 변환 API
+│ ├── reverse-geocode.js # 좌표 → 도시명 역변환 API
+│ └── weather.js # 날씨 데이터 요청 API
+├── public/ # 공개 자산 (이미지, 파비콘 등)
+│ ├── index.html # 메인 웹사이트 뷰 (SPA 진입점)
+│ ├── js/ # JS 파일 모음
+│ │ ├── chart.js # 차트 렌더링 및 업데이트 유틸
+│ │ ├── favorites.js # 즐겨찾기 저장, 선택 처리 로직
+│ │ ├── mapModal.js # 위치 검색 모달 UI 처리
+│ │ ├── weatherBackground.js # Unsplash 기반 배경 이미지 처리
+│ │ └── weatherClient.js # 날씨 API 호출 및 데이터 렌더링 처리
+├── .env # 환경변수 (.gitignore에 포함됨)
+├── .gitignore # Git 무시 설정 파일
+├── readme.md # 프로젝트 설명 (영문)
+├── readme.ko.md # 프로젝트 설명 (한글)
+└── vercel.json # Vercel 배포 설정
+
+---
+
 ## 기타
 
 - 향후 로그인 연동 및 서버 기반 즐겨찾기 동기화 예정
