@@ -4,7 +4,7 @@
 
 ---
 
-> 🇺🇸 [View English Version](./readme.md)
+> 🇺🇸 [View English Version](./readME.md)
 
 ## 프로젝트 소개
 
