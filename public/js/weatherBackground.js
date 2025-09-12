@@ -34,32 +34,32 @@ export async function updateBackground(weatherCode) {
     };
   } catch (error) {
     console.error("배경 이미지 불러오기 실패", error);
-    // ✅ fallback 배경
+    // ✅ fallback 배경 - 글래시피즘에 맞는 부드러운 그라데이션
     const body = document.body;
     switch (keyword) {
       case "clear sunny":
         body.style.background =
-          "linear-gradient(to bottom right, #fceabb, #f8b500)";
+          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
         break;
       case "overcast cloudy":
         body.style.background =
-          "linear-gradient(to bottom right, #bdc3c7, #2c3e50)";
+          "linear-gradient(135deg, #2c3e50 0%, #4a6741 100%)";
         break;
       case "rainy day":
         body.style.background =
-          "linear-gradient(to bottom right, #3a6073, #16222a)";
+          "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)";
         break;
       case "snowy winter":
         body.style.background =
-          "linear-gradient(to bottom right, #e6dada, #274046)";
+          "linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%)";
         break;
       case "thunderstorm lightning":
         body.style.background =
-          "linear-gradient(to bottom right, #373b44, #4286f4)";
+          "linear-gradient(135deg, #373b44 0%, #4286f4 100%)";
         break;
       default:
         body.style.background =
-          "linear-gradient(to bottom right, #a1c4fd, #c2e9fb)";
+          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
     }
 
     body.style.backgroundSize = "cover";

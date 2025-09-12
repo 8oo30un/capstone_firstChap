@@ -1,0 +1,30 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with glassmorphism effect -->
+  <circle cx="16" cy="16" r="15" fill="url(#glassGradient)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  
+  <!-- Weather icon (cloud with sun) -->
+  <g transform="translate(8, 8)">
+    <!-- Sun rays -->
+    <circle cx="8" cy="6" r="3" fill="rgba(255,255,255,0.9)" opacity="0.8"/>
+    <line x1="8" y1="1" x2="8" y2="3" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+    <line x1="8" y1="11" x2="8" y2="13" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+    <line x1="1" y1="6" x2="3" y2="6" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+    <line x1="13" y1="6" x2="15" y2="6" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+    <line x1="2.5" y1="2.5" x2="4" y2="4" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+    <line x1="12" y1="12" x2="13.5" y2="13.5" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+    <line x1="13.5" y1="2.5" x2="12" y2="4" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+    <line x1="4" y1="12" x2="2.5" y2="13.5" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+    
+    <!-- Cloud -->
+    <path d="M4 8 C2 8 1 9 1 10.5 C1 12 2 13 4 13 L12 13 C13 13 14 12 14 10.5 C14 9 13 8 12 8 C11.5 6.5 10 5.5 8.5 5.5 C7 5.5 5.5 6.5 5 8 Z" fill="rgba(255,255,255,0.6)" opacity="0.7"/>
+  </g>
+  
+  <!-- Glassmorphism gradient definition -->
+  <defs>
+    <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.2);stop-opacity:1" />
+      <stop offset="50%" style="stop-color:rgba(255,255,255,0.1);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0.05);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
