@@ -42,26 +42,183 @@
 <script type="module" src="./js/mapModal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  .flip-container {
-    perspective: 1000px;
+  /* Masonry Layout Styles */
+  .weather-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    break-inside: avoid;
+    height: fit-content;
   }
 
-  .flip-card {
-    transform-style: preserve-3d;
-    transition: transform 0.8s;
+  .charts-section {
+    grid-column: span 2;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 200px;
   }
 
-  .flip-container.flipped .flip-card {
-    transform: rotateY(180deg);
+  .charts-section.expanded {
+    grid-column: span 3;
+    grid-row: span 2;
+    z-index: 20;
+    position: relative;
+    transform: scale(1.02);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
 
-  .flip-front,
-  .flip-back {
-    backface-visibility: hidden;
+  .charts-section.expanded .chart-container {
+    height: 350px !important;
+    max-height: 350px;
   }
 
-  .flip-back {
-    transform: rotateY(180deg);
+  .chart-container {
+    height: 200px;
+    max-height: 200px;
+    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  /* Desktop specific improvements */
+  @media (min-width: 1024px) {
+    #weather-grid {
+      grid-template-columns: repeat(8, 1fr);
+      grid-auto-rows: minmax(90px, auto);
+      gap: 0.75rem;
+    }
+    
+    .charts-section {
+      grid-column: span 4;
+    }
+    
+    .charts-section.expanded {
+      grid-column: span 8;
+      grid-row: span 2;
+      min-height: 320px;
+    }
+    
+    .charts-section.expanded .chart-container {
+      height: 260px !important;
+      max-height: 260px;
+    }
+    
+    /* Individual card positioning for better masonry effect */
+    .weather-card[data-card="current-weather"] {
+      grid-column: span 3;
+      grid-row: span 1;
+    }
+    
+    .weather-card[data-card="temperature-range"] {
+      grid-column: span 2;
+      grid-row: span 1;
+    }
+    
+    .weather-card[data-card="uv-index"] {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+    
+    .weather-card[data-card="weather-status"] {
+      grid-column: span 2;
+      grid-row: span 1;
+    }
+    
+    .weather-card[data-card="today-essentials"] {
+      grid-column: span 3;
+      grid-row: span 1;
+    }
+    
+    .weather-card[data-card="my-favorites"] {
+      grid-column: span 2;
+      grid-row: span 1;
+    }
+    
+    /* Reduce padding for more compact look */
+    .weather-card {
+      padding: 0.75rem;
+    }
+    
+    .weather-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .weather-card .text-2xl {
+      font-size: 1.5rem;
+    }
+    
+    /* Make the main container more compact on desktop */
+    .main-weather-card {
+      padding: 1.5rem;
+    }
+    
+    .main-weather-card .lg\:w-1\/3 {
+      width: 25%;
+    }
+    
+    .main-weather-card .lg\:w-2\/3 {
+      width: 75%;
+    }
+    
+    /* Reduce spacing between elements */
+    .main-weather-card .flex.flex-col.lg\:flex-row.gap-6 {
+      gap: 1.5rem;
+    }
+  }
+
+  /* Tablet adjustments */
+  @media (max-width: 1023px) and (min-width: 768px) {
+    #weather-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    .charts-section {
+      grid-column: span 2;
+    }
+    
+    .charts-section.expanded {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+    
+    .charts-section.expanded .chart-container {
+      height: 280px !important;
+      max-height: 280px;
+    }
+    
+    /* Tablet card positioning */
+    .weather-card[data-card="today-essentials"],
+    .weather-card[data-card="my-favorites"] {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 767px) {
+    #weather-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .charts-section {
+      grid-column: span 1;
+    }
+    
+    .charts-section.expanded {
+      grid-column: span 1;
+      grid-row: span 2;
+    }
+    
+    .charts-section.expanded .chart-container {
+      height: 250px !important;
+      max-height: 250px;
+    }
+    
+    /* Mobile card positioning */
+    .weather-card[data-card="today-essentials"],
+    .weather-card[data-card="my-favorites"] {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
   }
 </style>
 <style>
@@ -106,38 +263,142 @@
     </div>
 
 
-    <div class="flip-container relative w-full max-w-md h-[400px]" id="flip-container">
+    <!-- Main Weather Dashboard -->
+    <div class="w-full max-w-7xl mx-auto space-y-6">
       
-      <div class="flip-card absolute w-full h-full">
+      <!-- Current Weather Card -->
+      <div class="main-weather-card bg-white/20 dark:bg-white/10 rounded-2xl p-6 shadow-2xl backdrop-blur-xl border border-white/40 dark:border-white/20">
+        <div class="flex flex-col lg:flex-row gap-6">
+          <!-- Weather Image & Basic Info -->
+          <div class="lg:w-1/3">
+            <h1 class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
+              <span id="location-name"></span><span data-en="'s Weather" data-ko="의 날씨">의 날씨</span>
+            </h1>
+            <img id="front-card-image" class="w-full h-48 object-cover rounded-xl mb-4" src="" alt="날씨 이미지" />
+          </div>
+          
+          <!-- Weather Details Grid - Masonry Layout -->
+          <div class="lg:w-2/3" id="weather-grid">
+            <!-- Current Weather Info -->
+            <div class="weather-card bg-white/30 dark:bg-white/20 rounded-xl p-4 backdrop-blur-md border border-white/50 dark:border-white/30" data-card="current-weather">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">🌡️</span>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="Current Weather" data-ko="현재 날씨">현재 날씨</h3>
+              </div>
+              <div id="weather" class="text-gray-800 dark:text-white space-y-1 text-sm" data-en="Loading weather information..." data-ko="날씨 정보를 불러오는 중...">날씨 정보를 불러오는 중...</div>
+            </div>
+            
+            <!-- Temperature Range -->
+            <div class="weather-card bg-white/30 dark:bg-white/20 rounded-xl p-4 backdrop-blur-md border border-white/50 dark:border-white/30" data-card="temperature-range">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">📊</span>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="Temperature Range" data-ko="기온 범위">기온 범위</h3>
+              </div>
+              <div id="temperature-range" class="text-gray-700 dark:text-gray-300 font-medium" data-en="Highest: --℃ / Lowest: --℃" data-ko="최고: --℃ / 최저: --℃">최고: --℃ / 최저: --℃</div>
+            </div>
+            
+            <!-- UV Index -->
+            <div class="weather-card bg-white/30 dark:bg-white/20 rounded-xl p-4 backdrop-blur-md border border-white/50 dark:border-white/30" data-card="uv-index">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">☀️</span>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="UV Index" data-ko="자외선 지수">자외선 지수</h3>
+              </div>
+              <div id="uv-index" class="text-amber-600 dark:text-yellow-300 font-semibold text-xl">--</div>
+            </div>
+            
+            <!-- Weather Status -->
+            <div class="weather-card bg-white/30 dark:bg-white/20 rounded-xl p-4 backdrop-blur-md border border-white/50 dark:border-white/30" data-card="weather-status">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">🌤️</span>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="Weather Status" data-ko="날씨 상태">날씨 상태</h3>
+              </div>
+              <div id="weather-keyword" class="text-gray-700 dark:text-gray-300 font-medium text-lg">--</div>
+            </div>
+            
+            <!-- Charts Section -->
+            <div class="weather-card charts-section bg-white/30 dark:bg-white/20 rounded-xl p-6 backdrop-blur-md border border-white/50 dark:border-white/30" data-card="charts" data-chart-expanded="false">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-2xl">📈</span>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="Weather Charts" data-ko="날씨 차트">날씨 차트</h3>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-6">
+                <button type="button" id="btn-rain" class="px-4 py-2 rounded-lg bg-white/40 dark:bg-white/30 backdrop-blur-md text-gray-900 dark:text-white text-sm border border-white/60 dark:border-white/40 hover:bg-white/50 dark:hover:bg-white/40 transition-all duration-200 shadow-sm font-medium" data-en="Precipitation" data-ko="강수량">강수량</button>
+                <button type="button" id="btn-temp" class="px-4 py-2 rounded-lg bg-white/40 dark:bg-white/30 backdrop-blur-md text-gray-900 dark:text-white text-sm border border-white/60 dark:border-white/40 hover:bg-white/50 dark:hover:bg-white/40 transition-all duration-200 shadow-sm font-medium" data-en="Temperature" data-ko="기온">기온</button>
+                <button type="button" id="btn-uv" class="px-4 py-2 rounded-lg bg-white/40 dark:bg-white/30 backdrop-blur-md text-gray-900 dark:text-white text-sm border border-white/60 dark:border-white/40 hover:bg-white/50 dark:hover:bg-white/40 transition-all duration-200 shadow-sm font-medium" data-en="UV Index" data-ko="자외선 지수">자외선 지수</button>
+              </div>
+              <div class="relative chart-container">
+                <div id="rain-chart" class="hidden w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-lg text-sm text-left border border-white/40 dark:border-white/20 p-3 cursor-pointer" onclick="toggleChartExpansion('rain-chart')">Precipitation chart</div>
+                <div id="temp-chart" class="hidden w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-lg text-sm text-left border border-white/40 dark:border-white/20 p-3 cursor-pointer" onclick="toggleChartExpansion('temp-chart')">Temperature chart</div>
+                <div id="uv-chart" class="hidden w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-lg text-sm text-left border border-white/40 dark:border-white/20 p-3 cursor-pointer" onclick="toggleChartExpansion('uv-chart')">UV index chart</div>
+              </div>
+            </div>
 
-        <!-- Front side -->
-        <div class="flip-front absolute inset-0 bg-white/20 dark:bg-white/10 text-gray-900 dark:text-white rounded-xl p-6 text-xl font-medium text-center shadow-2xl backdrop-blur-xl cursor-pointer border border-white/40 dark:border-white/20" id="weather-card-front">
-<h1 class="text-3xl font-bold mb-4 "><span id="location-name"></span>'s weather</h1>         
-          <h2 id="weather-keyword" class="text-xl font-semibold mb-4 tracking-wide"></h2>
-          <img id="front-card-image" class="w-full h-32 object-cover rounded-md mb-4" src="" alt="날씨 이미지" />
-          <div id="weather">날씨 정보를 불러오는 중...</div>
-        </div>
-        <!-- Back side -->
-        <div class="flip-back absolute inset-0 bg-white/20 dark:bg-white/10 rounded-xl p-6 text-center shadow-2xl backdrop-blur-xl cursor-pointer flex items-center justify-center px-8 border border-white/40 dark:border-white/20">
-          <div id="back-card-content" class="text-gray-900 dark:text-white text-lg">
-            <div class="flex flex-col gap-4">
-  <h3 class="text-xl font-semibold mb-2"> <span id="location-name-back">currentLocation</span>'s weather data</h3>
-  <div class="flex justify-center gap-2 mb-2">
-    <button type="button" id="btn-rain" class="px-3 py-1 rounded bg-white/30 dark:bg-white/20 backdrop-blur-md text-gray-900 dark:text-white text-sm border border-white/50 dark:border-white/30 hover:bg-white/40 dark:hover:bg-white/30 transition-all duration-200 shadow-sm">Precipitation</button>
-    <button type="button" id="btn-temp" class="px-3 py-1 rounded bg-white/30 dark:bg-white/20 backdrop-blur-md text-gray-900 dark:text-white text-sm border border-white/50 dark:border-white/30 hover:bg-white/40 dark:hover:bg-white/30 transition-all duration-200 shadow-sm">Temperature</button>
-    <button type="button" id="btn-uv" class="px-3 py-1 rounded bg-white/30 dark:bg-white/20 backdrop-blur-md text-gray-900 dark:text-white text-sm border border-white/50 dark:border-white/30 hover:bg-white/40 dark:hover:bg-white/30 transition-all duration-200 shadow-sm">UV index</button>
-  </div>
-  <div id="rain-chart" class="hidden h-32 w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-md text-sm text-left border border-white/40 dark:border-white/20">Precipitation chart</div>
-  <div id="temp-chart" class="hidden h-32 w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-md text-sm text-left border border-white/40 dark:border-white/20">Temperature chart</div>
-  <div id="uv-chart" class="hidden h-32 w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-md text-sm text-left border border-white/40 dark:border-white/20">UV index chart</div>
-  <div id="temperature-range" class="text-sm text-gray-600 dark:text-gray-300">🌡️ Highest: --℃ / Lowest: --℃</div>
-  <div id="uv-index" class="text-sm text-amber-600 dark:text-yellow-300">☀️ UV index: --</div>
-</div>
+            <!-- Today's Essentials -->
+            <div class="weather-card bg-white/30 dark:bg-white/20 rounded-xl p-4 backdrop-blur-md border border-white/50 dark:border-white/30" data-card="today-essentials">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">📋</span>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="Today's Essentials" data-ko="오늘의 필수 정보">오늘의 필수 정보</h3>
+              </div>
+              
+              <!-- Weather Info -->
+              <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300 mb-4">
+                <div class="flex justify-between">
+                  <span data-en="Sunrise" data-ko="일출">일출:</span>
+                  <span id="sunrise-time">--:--</span>
+                </div>
+                <div class="flex justify-between">
+                  <span data-en="Sunset" data-ko="일몰">일몰:</span>
+                  <span id="sunset-time">--:--</span>
+                </div>
+                <div class="flex justify-between">
+                  <span data-en="Humidity" data-ko="습도">습도:</span>
+                  <span id="humidity">--%</span>
+                </div>
+                <div class="flex justify-between">
+                  <span data-en="Wind Speed" data-ko="풍속">풍속:</span>
+                  <span id="wind-speed">-- km/h</span>
+                </div>
+              </div>
+              
+              <!-- Preparation Items -->
+              <div class="border-t border-white/30 dark:border-white/20 pt-3">
+                <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200 mb-2" data-en="Preparation Items" data-ko="준비물">준비물</h4>
+                <ul id="prep-list" class="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                  <li data-en="Loading..." data-ko="로딩 중...">로딩 중...</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- My Favorites -->
+            <div class="weather-card bg-white/30 dark:bg-white/20 rounded-xl p-4 backdrop-blur-md border border-white/50 dark:border-white/30" data-card="my-favorites">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">⭐</span>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="My Favorites" data-ko="내 즐겨찾기">내 즐겨찾기</h3>
+              </div>
+              <div id="favorites-list" class="space-y-2 mb-3">
+                <p class="text-sm text-gray-600 dark:text-gray-400" data-en="No favorites yet" data-ko="아직 즐겨찾기가 없습니다">아직 즐겨찾기가 없습니다</p>
+              </div>
+              <button id="add-favorite" class="w-full bg-white/40 dark:bg-white/30 hover:bg-white/50 dark:hover:bg-white/40 text-gray-900 dark:text-white px-3 py-2 rounded-lg border border-white/60 dark:border-white/40 backdrop-blur-md transition-all duration-200 text-sm font-medium" data-en="Add Current Location" data-ko="현재 위치 추가">현재 위치 추가</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-<button id="open-map-modal" class="bg-white/30 dark:bg-white/20 hover:bg-white/40 dark:hover:bg-white/30 text-gray-900 dark:text-white px-4 py-2 rounded-lg border border-white/50 dark:border-white/30 backdrop-blur-md transition-all duration-200 shadow-lg font-medium">open map-modal</button>
+    
+    <!-- Map Modal Button -->
+    <div class="flex justify-center mt-6">
+      <button id="open-map-modal" class="bg-white/30 dark:bg-white/20 hover:bg-white/40 dark:hover:bg-white/30 text-gray-900 dark:text-white px-6 py-3 rounded-xl border border-white/50 dark:border-white/30 backdrop-blur-md transition-all duration-200 shadow-lg font-medium flex items-center gap-2">
+        <span class="text-xl">🗺️</span>
+        <span data-en="Change Location" data-ko="위치 변경">위치 변경</span>
+      </button>
+    </div>
+
+    <!-- Language Toggle Button -->
+    <button id="language-toggle" class="fixed top-4 left-4 z-50 bg-white/30 dark:bg-white/20 hover:bg-white/40 dark:hover:bg-white/30 text-gray-900 dark:text-white px-4 py-2 rounded-lg border border-white/50 dark:border-white/30 backdrop-blur-md transition-all duration-200 shadow-lg font-medium">
+      <span data-en="🇰🇷 한국어" data-ko="🇺🇸 English">🇰🇷 한국어</span>
+    </button>
+
+
   <div
     id="map-modal-container"
     class="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center hidden z-50 px-8"
@@ -226,39 +487,11 @@ city name: --</h2>
 >wind speed: -- km/h 💨</p>
   </div>
 </div>
+
 </div>
 
-<!-- Today’s Essentials and Favorites -->
-    <div id="prep-items" class="fixed right-4 top-4 bg-white/20 dark:bg-white/10 p-4 rounded-lg max-w-xs shadow-2xl backdrop-blur-xl z-40 border border-white/40 dark:border-white/20">
-      <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Today's Essentials</h3>
-      <ul id="prep-list" class="list-disc list-inside space-y-1 text-sm text-gray-800 dark:text-white"></ul>
-    </div>
-    <div class="relative">
-      <div id="favorites-container" class="fixed right-4 top-[220px] bg-white/20 dark:bg-white/10 p-4 rounded-lg max-w-xs shadow-2xl backdrop-blur-xl z-40 max-h-[60vh] overflow-y-auto md:block hidden border border-white/40 dark:border-white/20">
-        <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">   My Favorites   </h3>
-        <div id="favorites-list" class="flex flex-col gap-3 text-gray-800 dark:text-white"> </div>
-      </div>
-    </div>
     <script type="module" src="./js/chart.js"></script>
 
-<!-- Logic for flipping the weather card -->
-  <script>
-    const flipContainer = document.getElementById('flip-container');
-    const weatherCardFront = document.getElementById('weather-card-front');
-    const flipCard = flipContainer.querySelector('.flip-card');
-
-    function toggleFlip() {
-      flipContainer.classList.toggle('flipped');
-    }
-
-    weatherCardFront.addEventListener('click', toggleFlip);
-
-    const flipBack = flipContainer.querySelector('.flip-back');
-    flipBack.addEventListener('click', (event) => {
-      const isButton = event.target.closest('button');
-      if (!isButton) toggleFlip();
-    });
-  </script>
 
 
 <!-- Logic for showing/hiding charts based on button clicks -->
@@ -401,5 +634,116 @@ city name: --</h2>
     });
   </script>
 
+  <!-- Language toggle and chart expansion functionality -->
+  <script>
+    // Language toggle functionality
+    let currentLanguage = 'ko';
+    
+    function updateLanguage() {
+      const elements = document.querySelectorAll('[data-ko][data-en]');
+      elements.forEach(element => {
+        const text = element.getAttribute(`data-${currentLanguage}`);
+        if (element.tagName === 'INPUT') {
+          element.placeholder = text;
+        } else {
+          element.textContent = text;
+        }
+      });
+      
+      // Update language toggle button
+      const toggleButton = document.getElementById('language-toggle');
+      if (toggleButton) {
+        const buttonText = toggleButton.querySelector('span');
+        buttonText.textContent = currentLanguage === 'ko' ? '🇺🇸 English' : '🇰🇷 한국어';
+      }
+    }
+    
+    function initializeLanguageToggle() {
+      const languageToggle = document.getElementById('language-toggle');
+      if (languageToggle) {
+        languageToggle.addEventListener('click', function() {
+          currentLanguage = currentLanguage === 'ko' ? 'en' : 'ko';
+          updateLanguage();
+          
+          // 언어 전환 이벤트 발생
+          window.dispatchEvent(new CustomEvent('languagechanged'));
+        });
+      }
+    }
+
+    // Chart expansion functionality
+    function toggleChartExpansion(chartId) {
+      const chartsSection = document.querySelector('.charts-section');
+      const isExpanded = chartsSection.getAttribute('data-chart-expanded') === 'true';
+      const weatherGrid = document.getElementById('weather-grid');
+      
+      if (isExpanded) {
+        // Collapse chart
+        chartsSection.classList.remove('expanded');
+        chartsSection.setAttribute('data-chart-expanded', 'false');
+        
+        // Reset grid layout based on screen size
+        resetGridLayout();
+      } else {
+        // Expand chart
+        chartsSection.classList.add('expanded');
+        chartsSection.setAttribute('data-chart-expanded', 'true');
+        
+        // Adjust grid layout for expanded chart
+        if (window.innerWidth >= 1024) {
+          weatherGrid.style.gridTemplateColumns = 'repeat(8, 1fr)';
+        } else if (window.innerWidth >= 768) {
+          weatherGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+        } else {
+          weatherGrid.style.gridTemplateColumns = '1fr';
+        }
+      }
+    }
+
+    // Reset grid layout based on screen size
+    function resetGridLayout() {
+      const weatherGrid = document.getElementById('weather-grid');
+      
+      if (window.innerWidth >= 1024) {
+        weatherGrid.style.gridTemplateColumns = 'repeat(8, 1fr)';
+      } else if (window.innerWidth >= 768) {
+        weatherGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+      } else {
+        weatherGrid.style.gridTemplateColumns = '1fr';
+      }
+    }
+
+    // Initialize masonry layout
+    function initializeMasonryLayout() {
+      const weatherGrid = document.getElementById('weather-grid');
+      
+      // Set initial grid layout
+      weatherGrid.style.display = 'grid';
+      weatherGrid.style.alignItems = 'start';
+      weatherGrid.style.gridAutoRows = 'minmax(120px, auto)';
+      
+      // Set responsive grid columns
+      resetGridLayout();
+      
+      // Add resize listener for responsive behavior
+      window.addEventListener('resize', function() {
+        const chartsSection = document.querySelector('.charts-section');
+        const isExpanded = chartsSection.getAttribute('data-chart-expanded') === 'true';
+        
+        if (!isExpanded) {
+          resetGridLayout();
+        }
+      });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeMasonryLayout();
+      initializeLanguageToggle();
+      updateLanguage();
+    });
+  </script>
+
   </body>
+</html>
 </html>

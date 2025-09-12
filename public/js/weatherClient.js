@@ -32,10 +32,17 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       location.href = location.href.replace(/^http:/, "https:");
     }
 
+    // 환경에 따른 API URL 설정 (함수 최상단으로 이동)
+    const apiBaseUrl =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
+        ? "" // vercel dev 사용 시 로컬 API 사용
+        : ""; // 프로덕션에서는 상대 경로 사용
+
     let cityName = "unknown";
     try {
       const geoRes = await fetch(
-        `/api/reverse-geocode?latitude=${latitude}&longitude=${longitude}`
+        `${apiBaseUrl}/api/reverse-geocode?latitude=${latitude}&longitude=${longitude}`
       );
 
       if (geoRes.ok) {
@@ -90,7 +97,7 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
 
     // Updated fetch URL with temperature_2m_max and temperature_2m_min added
     const response = await fetch(
-      `/api/weather?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode,uv_index&daily=sunrise,sunset,uv_index_max,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul`
+      `${apiBaseUrl}/api/weather?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,relative_humidity_2m,precipitation,windspeed_10m,weathercode,uv_index&daily=sunrise,sunset,uv_index_max,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul`
     );
     if (!response.ok) throw new Error("API 호출 실패");
 
@@ -142,6 +149,7 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       items.forEach((item) => {
         const li = document.createElement("li");
         li.textContent = item;
+        li.className = "flex items-center gap-1";
         list.appendChild(li);
       });
     }
@@ -164,7 +172,48 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       }
     }
 
+    function updateTodayEssentials(data) {
+      // Sunrise/Sunset
+      const sunriseEl = document.getElementById("sunrise-time");
+      const sunsetEl = document.getElementById("sunset-time");
+      if (sunriseEl && sunsetEl) {
+        const sunrise = data.daily.sunrise?.[0];
+        const sunset = data.daily.sunset?.[0];
+        if (sunrise) {
+          const sunriseTime = new Date(sunrise).toLocaleTimeString("ko-KR", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          });
+          sunriseEl.textContent = sunriseTime;
+        }
+        if (sunset) {
+          const sunsetTime = new Date(sunset).toLocaleTimeString("ko-KR", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          });
+          sunsetEl.textContent = sunsetTime;
+        }
+      }
+
+      // Humidity
+      const humidityEl = document.getElementById("humidity");
+      if (humidityEl && data.hourly.relative_humidity_2m) {
+        const currentHumidity = data.hourly.relative_humidity_2m[0];
+        humidityEl.textContent = `${Math.round(currentHumidity)}%`;
+      }
+
+      // Wind Speed
+      const windSpeedEl = document.getElementById("wind-speed");
+      if (windSpeedEl && data.hourly.windspeed_10m) {
+        const currentWindSpeed = data.hourly.windspeed_10m[0];
+        windSpeedEl.textContent = `${Math.round(currentWindSpeed)} km/h`;
+      }
+    }
+
     updateBackCardDetails(data);
+    updateTodayEssentials(data);
 
     const chartsModule = await import("./chart.js");
 
@@ -193,3 +242,14 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
 }
 
 document.addEventListener("DOMContentLoaded", fetchWeather);
+
+// 언어 전환 이벤트 리스너 추가
+window.addEventListener("languagechanged", () => {
+  if (
+    typeof window.currentWeatherLat !== "undefined" &&
+    typeof window.currentWeatherLng !== "undefined"
+  ) {
+    console.log("🌐 언어 전환 감지 - 날씨 데이터 재로드");
+    fetchWeather(window.currentWeatherLat, window.currentWeatherLng);
+  }
+});
