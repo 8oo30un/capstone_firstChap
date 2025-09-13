@@ -42,141 +42,58 @@
 <script type="module" src="./js/mapModal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  /* Masonry Layout Styles */
+  /* Simple Grid Layout */
+  #weather-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+    margin-top: 2rem;
+    padding-top: 0.9rem;
+  }
+
   .weather-card {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    break-inside: avoid;
+    transition: all 0.3s ease-in-out;
     height: fit-content;
   }
 
   .charts-section {
-    grid-column: span 2;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 200px;
+    grid-column: 1 / -1;
+    transition: all 0.3s ease-in-out;
+    min-height: 250px;
   }
 
   .charts-section.expanded {
-    grid-column: span 3;
+    grid-column: 1 / -1;
     grid-row: span 2;
     z-index: 20;
     position: relative;
-    transform: scale(1.02);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(1.01);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
   }
 
   .charts-section.expanded .chart-container {
-    height: 350px !important;
-    max-height: 350px;
+    height: 400px !important;
+    max-height: 400px;
   }
 
   .chart-container {
-    height: 200px;
-    max-height: 200px;
-    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 180px;
+    max-height: 180px;
+    transition: height 0.3s ease-in-out;
     overflow: hidden;
   }
 
-  /* Desktop specific improvements */
+  /* Responsive adjustments */
   @media (min-width: 1024px) {
     #weather-grid {
-      grid-template-columns: repeat(8, 1fr);
-      grid-auto-rows: minmax(90px, auto);
-      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
     }
     
-    .charts-section {
-      grid-column: span 4;
-    }
-    
-    .charts-section.expanded {
-      grid-column: span 8;
-      grid-row: span 2;
-      min-height: 320px;
-    }
-    
-    .charts-section.expanded .chart-container {
-      height: 260px !important;
-      max-height: 260px;
-    }
-    
-    /* Individual card positioning for better masonry effect */
-    .weather-card[data-card="current-weather"] {
-      grid-column: span 3;
-      grid-row: span 1;
-    }
-    
-    .weather-card[data-card="temperature-range"] {
-      grid-column: span 2;
-      grid-row: span 1;
-    }
-    
-    .weather-card[data-card="uv-index"] {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-    
-    .weather-card[data-card="weather-status"] {
-      grid-column: span 2;
-      grid-row: span 1;
-    }
-    
-    .weather-card[data-card="today-essentials"] {
-      grid-column: span 3;
-      grid-row: span 1;
-    }
-    
-    .weather-card[data-card="my-favorites"] {
-      grid-column: span 2;
-      grid-row: span 1;
-    }
-    
-    /* Reduce padding for more compact look */
-    .weather-card {
-      padding: 0.75rem;
-    }
-    
-    .weather-card h3 {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .weather-card .text-2xl {
-      font-size: 1.5rem;
-    }
-    
-    /* Make the main container more compact on desktop */
-    .main-weather-card {
-      padding: 1.5rem;
-    }
-    
-    .main-weather-card .lg\:w-1\/3 {
-      width: 25%;
-    }
-    
-    .main-weather-card .lg\:w-2\/3 {
-      width: 75%;
-    }
-    
-    /* Reduce spacing between elements */
-    .main-weather-card .flex.flex-col.lg\:flex-row.gap-6 {
-      gap: 1.5rem;
-    }
-  }
-
-  /* Tablet adjustments */
-  @media (max-width: 1023px) and (min-width: 768px) {
-    #weather-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-    }
-    
-    .charts-section {
-      grid-column: span 2;
-    }
-    
-    .charts-section.expanded {
-      grid-column: span 2;
-      grid-row: span 2;
+    .chart-container {
+      height: 160px;
+      max-height: 160px;
     }
     
     .charts-section.expanded .chart-container {
@@ -184,40 +101,50 @@
       max-height: 280px;
     }
     
-    /* Tablet card positioning */
-    .weather-card[data-card="today-essentials"],
-    .weather-card[data-card="my-favorites"] {
-      grid-column: span 1;
-      grid-row: span 1;
+    .main-weather-card {
+      padding: 2rem;
+    }
+    
+    .main-weather-card .lg\:w-1\/3 {
+      width: 30%;
+    }
+    
+    .main-weather-card .lg\:w-2\/3 {
+      width: 70%;
     }
   }
 
-  /* Mobile adjustments */
+  @media (max-width: 1023px) and (min-width: 768px) {
+    #weather-grid {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .chart-container {
+      height: 150px;
+      max-height: 150px;
+    }
+    
+    .charts-section.expanded .chart-container {
+      height: 220px !important;
+      max-height: 220px;
+    }
+  }
+
   @media (max-width: 767px) {
     #weather-grid {
       grid-template-columns: 1fr;
       gap: 1rem;
     }
     
-    .charts-section {
-      grid-column: span 1;
-    }
-    
-    .charts-section.expanded {
-      grid-column: span 1;
-      grid-row: span 2;
+    .chart-container {
+      height: 140px;
+      max-height: 140px;
     }
     
     .charts-section.expanded .chart-container {
-      height: 250px !important;
-      max-height: 250px;
-    }
-    
-    /* Mobile card positioning */
-    .weather-card[data-card="today-essentials"],
-    .weather-card[data-card="my-favorites"] {
-      grid-column: span 1;
-      grid-row: span 1;
+      height: 200px !important;
+      max-height: 200px;
     }
   }
 </style>
@@ -275,12 +202,21 @@
               <span id="location-name"></span><span data-en="'s Weather" data-ko="의 날씨">의 날씨</span>
             </h1>
             <img id="front-card-image" class="w-full h-48 object-cover rounded-xl mb-4" src="" alt="날씨 이미지" />
+            
+            <!-- Current Weather Info - Desktop only -->
+            <div class="hidden lg:block weather-card bg-white/30 dark:bg-white/20 rounded-xl p-4 backdrop-blur-md border border-white/50 dark:border-white/30">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">🌡️</span>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="Current Weather" data-ko="현재 날씨">현재 날씨</h3>
+              </div>
+              <div id="weather-desktop" class="text-gray-800 dark:text-white space-y-1 text-sm" data-en="Loading weather information..." data-ko="날씨 정보를 불러오는 중...">날씨 정보를 불러오는 중...</div>
+            </div>
           </div>
           
           <!-- Weather Details Grid - Masonry Layout -->
           <div class="lg:w-2/3" id="weather-grid">
-            <!-- Current Weather Info -->
-            <div class="weather-card bg-white/30 dark:bg-white/20 rounded-xl p-4 backdrop-blur-md border border-white/50 dark:border-white/30" data-card="current-weather">
+            <!-- Current Weather Info - Mobile/Tablet only -->
+            <div class="lg:hidden weather-card bg-white/30 dark:bg-white/20 rounded-xl p-4 backdrop-blur-md border border-white/50 dark:border-white/30" data-card="current-weather">
               <div class="flex items-center gap-2 mb-3">
                 <span class="text-2xl">🌡️</span>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="Current Weather" data-ko="현재 날씨">현재 날씨</h3>
@@ -322,14 +258,14 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="Weather Charts" data-ko="날씨 차트">날씨 차트</h3>
               </div>
               <div class="flex flex-wrap gap-2 mb-6">
-                <button type="button" id="btn-rain" class="px-4 py-2 rounded-lg bg-white/40 dark:bg-white/30 backdrop-blur-md text-gray-900 dark:text-white text-sm border border-white/60 dark:border-white/40 hover:bg-white/50 dark:hover:bg-white/40 transition-all duration-200 shadow-sm font-medium" data-en="Precipitation" data-ko="강수량">강수량</button>
+                <button type="button" id="btn-rain" class="px-4 py-2 rounded-lg bg-blue-500/80 dark:bg-blue-600/80 backdrop-blur-md text-white text-sm border border-blue-400/60 dark:border-blue-500/60 hover:bg-blue-600/90 dark:hover:bg-blue-700/90 transition-all duration-200 shadow-sm font-medium" data-en="Precipitation" data-ko="강수량">강수량</button>
                 <button type="button" id="btn-temp" class="px-4 py-2 rounded-lg bg-white/40 dark:bg-white/30 backdrop-blur-md text-gray-900 dark:text-white text-sm border border-white/60 dark:border-white/40 hover:bg-white/50 dark:hover:bg-white/40 transition-all duration-200 shadow-sm font-medium" data-en="Temperature" data-ko="기온">기온</button>
                 <button type="button" id="btn-uv" class="px-4 py-2 rounded-lg bg-white/40 dark:bg-white/30 backdrop-blur-md text-gray-900 dark:text-white text-sm border border-white/60 dark:border-white/40 hover:bg-white/50 dark:hover:bg-white/40 transition-all duration-200 shadow-sm font-medium" data-en="UV Index" data-ko="자외선 지수">자외선 지수</button>
               </div>
               <div class="relative chart-container">
-                <div id="rain-chart" class="hidden w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-lg text-sm text-left border border-white/40 dark:border-white/20 p-3 cursor-pointer" onclick="toggleChartExpansion('rain-chart')">Precipitation chart</div>
-                <div id="temp-chart" class="hidden w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-lg text-sm text-left border border-white/40 dark:border-white/20 p-3 cursor-pointer" onclick="toggleChartExpansion('temp-chart')">Temperature chart</div>
-                <div id="uv-chart" class="hidden w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-lg text-sm text-left border border-white/40 dark:border-white/20 p-3 cursor-pointer" onclick="toggleChartExpansion('uv-chart')">UV index chart</div>
+                <div id="rain-chart" class="w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-lg text-sm text-left border border-white/40 dark:border-white/20 p-2 cursor-pointer" onclick="toggleChartExpansion('rain-chart')">Precipitation chart</div>
+                <div id="temp-chart" class="hidden w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-lg text-sm text-left border border-white/40 dark:border-white/20 p-2 cursor-pointer" onclick="toggleChartExpansion('temp-chart')">Temperature chart</div>
+                <div id="uv-chart" class="hidden w-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-lg text-sm text-left border border-white/40 dark:border-white/20 p-2 cursor-pointer" onclick="toggleChartExpansion('uv-chart')">UV index chart</div>
               </div>
             </div>
 
@@ -374,12 +310,12 @@
               <div class="flex items-center gap-2 mb-3">
                 <span class="text-2xl">⭐</span>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white" data-en="My Favorites" data-ko="내 즐겨찾기">내 즐겨찾기</h3>
-              </div>
+        </div>
               <div id="favorites-list" class="space-y-2 mb-3">
                 <p class="text-sm text-gray-600 dark:text-gray-400" data-en="No favorites yet" data-ko="아직 즐겨찾기가 없습니다">아직 즐겨찾기가 없습니다</p>
-              </div>
+  </div>
               <button id="add-favorite" class="w-full bg-white/40 dark:bg-white/30 hover:bg-white/50 dark:hover:bg-white/40 text-gray-900 dark:text-white px-3 py-2 rounded-lg border border-white/60 dark:border-white/40 backdrop-blur-md transition-all duration-200 text-sm font-medium" data-en="Add Current Location" data-ko="현재 위치 추가">현재 위치 추가</button>
-            </div>
+</div>
           </div>
         </div>
       </div>
@@ -399,10 +335,10 @@
     </button>
 
 
-  <div
-    id="map-modal-container"
+<div
+  id="map-modal-container"
     class="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center hidden z-50 px-8"
-  >
+>
   <!-- Left side: map modal -->
   <div
     id="map-modal"
@@ -675,70 +611,34 @@ city name: --</h2>
     function toggleChartExpansion(chartId) {
       const chartsSection = document.querySelector('.charts-section');
       const isExpanded = chartsSection.getAttribute('data-chart-expanded') === 'true';
-      const weatherGrid = document.getElementById('weather-grid');
       
       if (isExpanded) {
         // Collapse chart
         chartsSection.classList.remove('expanded');
         chartsSection.setAttribute('data-chart-expanded', 'false');
-        
-        // Reset grid layout based on screen size
-        resetGridLayout();
       } else {
         // Expand chart
         chartsSection.classList.add('expanded');
         chartsSection.setAttribute('data-chart-expanded', 'true');
-        
-        // Adjust grid layout for expanded chart
-        if (window.innerWidth >= 1024) {
-          weatherGrid.style.gridTemplateColumns = 'repeat(8, 1fr)';
-        } else if (window.innerWidth >= 768) {
-          weatherGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-        } else {
-          weatherGrid.style.gridTemplateColumns = '1fr';
-        }
       }
     }
 
-    // Reset grid layout based on screen size
-    function resetGridLayout() {
+    // Initialize simple grid layout
+    function initializeGridLayout() {
       const weatherGrid = document.getElementById('weather-grid');
       
-      if (window.innerWidth >= 1024) {
-        weatherGrid.style.gridTemplateColumns = 'repeat(8, 1fr)';
-      } else if (window.innerWidth >= 768) {
-        weatherGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-      } else {
-        weatherGrid.style.gridTemplateColumns = '1fr';
+      if (!weatherGrid) {
+        console.error('weather-grid element not found');
+        return;
       }
-    }
-
-    // Initialize masonry layout
-    function initializeMasonryLayout() {
-      const weatherGrid = document.getElementById('weather-grid');
       
-      // Set initial grid layout
-      weatherGrid.style.display = 'grid';
-      weatherGrid.style.alignItems = 'start';
-      weatherGrid.style.gridAutoRows = 'minmax(120px, auto)';
-      
-      // Set responsive grid columns
-      resetGridLayout();
-      
-      // Add resize listener for responsive behavior
-      window.addEventListener('resize', function() {
-        const chartsSection = document.querySelector('.charts-section');
-        const isExpanded = chartsSection.getAttribute('data-chart-expanded') === 'true';
-        
-        if (!isExpanded) {
-          resetGridLayout();
-        }
-      });
+      // Grid is already styled with CSS, no need for complex JavaScript
+      console.log('Grid layout initialized');
     }
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
-      initializeMasonryLayout();
+      initializeGridLayout();
       initializeLanguageToggle();
       updateLanguage();
     });

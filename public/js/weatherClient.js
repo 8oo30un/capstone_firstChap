@@ -109,15 +109,27 @@ export async function fetchWeather(inputLat = null, inputLng = null) {
       precipitation: data.hourly?.precipitation || [],
     };
     console.log("🌡️ 시간별 기온 및 자외선 데이터:", window.weatherHourlyData);
+
+    // Extract weather data
+    const temp = data.current_weather.temperature;
+    const wind = data.current_weather.windspeed;
+    const humidity = data.hourly.relative_humidity_2m[0];
+    const precipitation = data.hourly.precipitation[0];
+
+    // Update mobile/tablet weather info
     const weatherElement = document.getElementById("weather");
-
     if (weatherElement) {
-      const temp = data.current_weather.temperature;
-      const wind = data.current_weather.windspeed;
-      const humidity = data.hourly.relative_humidity_2m[0];
-      const precipitation = data.hourly.precipitation[0];
-
       weatherElement.innerText =
+        `current temperature: ${temp}°C\n` +
+        `wind speed: ${wind} km/h\n` +
+        `humidity: ${humidity}%\n` +
+        `precipitation: ${precipitation} mm\n`;
+    }
+
+    // Update desktop weather info
+    const weatherDesktopElement = document.getElementById("weather-desktop");
+    if (weatherDesktopElement) {
+      weatherDesktopElement.innerText =
         `current temperature: ${temp}°C\n` +
         `wind speed: ${wind} km/h\n` +
         `humidity: ${humidity}%\n` +

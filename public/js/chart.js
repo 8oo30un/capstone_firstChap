@@ -35,10 +35,13 @@ export function renderRainChart(hourlyData) {
     data: data,
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       layout: {
         padding: {
-          top: 20,
-          right: 20,
+          top: 5,
+          right: 5,
+          bottom: 5,
+          left: 5,
         },
       },
       plugins: {
@@ -54,11 +57,28 @@ export function renderRainChart(hourlyData) {
         },
       },
       scales: {
+        x: {
+          ticks: {
+            font: {
+              size: 10,
+            },
+            maxTicksLimit: 8,
+          },
+        },
         y: {
           beginAtZero: true,
+          ticks: {
+            font: {
+              size: 10,
+            },
+            maxTicksLimit: 6,
+          },
           title: {
             display: true,
             text: "강수량 (mm)",
+            font: {
+              size: 11,
+            },
           },
         },
       },
@@ -101,10 +121,13 @@ export function renderTempChart(hourlyData, canvas) {
     data,
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       layout: {
         padding: {
-          top: 20,
-          right: 20,
+          top: 5,
+          right: 5,
+          bottom: 5,
+          left: 5,
         },
       },
       plugins: {
@@ -116,9 +139,38 @@ export function renderTempChart(hourlyData, canvas) {
         },
       },
       scales: {
+        x: {
+          ticks: {
+            font: {
+              size: 10,
+            },
+            maxTicksLimit: 8,
+          },
+        },
         y: {
           beginAtZero: false,
-          title: { display: true, text: "기온 (°C)" },
+          ticks: {
+            font: {
+              size: 10,
+            },
+            maxTicksLimit: 5,
+            padding: 5,
+          },
+          grid: {
+            display: true,
+            drawBorder: false,
+          },
+          title: {
+            display: true,
+            text: "기온 (°C)",
+            font: {
+              size: 11,
+            },
+            padding: {
+              top: 5,
+              bottom: 5,
+            },
+          },
         },
       },
     },
@@ -177,10 +229,13 @@ export function renderUvChart(hourlyData) {
     data: data,
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       layout: {
         padding: {
-          top: 20,
-          right: 20,
+          top: 5,
+          right: 5,
+          bottom: 5,
+          left: 5,
         },
       },
       plugins: {
@@ -196,11 +251,37 @@ export function renderUvChart(hourlyData) {
         },
       },
       scales: {
+        x: {
+          ticks: {
+            font: {
+              size: 10,
+            },
+            maxTicksLimit: 8,
+          },
+        },
         y: {
           beginAtZero: true,
+          ticks: {
+            font: {
+              size: 10,
+            },
+            maxTicksLimit: 5,
+            padding: 5,
+          },
+          grid: {
+            display: true,
+            drawBorder: false,
+          },
           title: {
             display: true,
             text: "자외선 지수",
+            font: {
+              size: 11,
+            },
+            padding: {
+              top: 5,
+              bottom: 5,
+            },
           },
         },
       },
